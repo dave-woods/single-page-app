@@ -1,14 +1,22 @@
 import React from 'react'
 import ReactDOM from 'react-dom'
+import { Router, Route, IndexRoute, hashHistory } from 'react-router'
 
-class Layout extends React.Component {
-	render() {
-		return (
-			<h1>Working</h1>
-		);
-	}
-}
+import Layout from './pages/Layout.js'
+import Home from './pages/Home.js'
+import Research from './pages/Research.js'
+import Teaching from './pages/Teaching.js'
+import Contact from './pages/Contact.js'
 
 const app = document.getElementById('app');
 
-ReactDOM.render(<Layout/>, app);
+ReactDOM.render(
+	<Router history={hashHistory}>
+		<Route path="/" component={Layout}>
+			<IndexRoute component={Home}></IndexRoute>
+			<Route path="/research" component={Research}></Route>
+			<Route path="/teaching(/:page)" component={Teaching}></Route>
+			<Route path="/contact" component={Contact}></Route>
+		</Route>
+	</Router>,
+app);

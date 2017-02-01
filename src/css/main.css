@@ -1,3 +1,44 @@
-h1 {
+body {
+	background: #EEEEEE;
+	line-height: 1.6;
+	font-size: 18px;
+	color: #343434;
 	font-family: Arial;
+	margin: 0;
+}
+
+.body-wrap {
+	margin: 1em 2em;
+}
+
+nav {
+	display: flex;
+	flex-flow: row nowrap;
+	color: #f49542;
+	background-color: #343434;
+	border-bottom: 0.2rem solid #f49542;
+	height: 4rem;
+}
+
+nav > a {
+	flex: 1 1 auto;
+	color: #f49542;
+	text-decoration: none;
+	display: flex;
+	justify-content: center;
+	align-items: center;
+	font-weight: bold;
+	cursor: pointer;
+}
+
+nav > a.active {
+	background-color: rgba(0, 0, 0, 0.2);
+}
+
+nav > a:not(.active):hover {
+	background-color: rgba(0, 0, 0, 0.2);
+}
+
+button {
+	margin: 1em;
 }
