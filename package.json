@@ -23,7 +23,8 @@
   },
   "scripts": {
     "dev": "webpack-dev-server --content-base src --inline --hot",
-    "bundle": "NODE_ENV=production webpack"
+    "bundle": "NODE_ENV=production webpack",
+	"heroku-postbuild": "webpack -p --config ./webpack.config.js --progress"
   },
   "author": "",
   "license": "ISC"
