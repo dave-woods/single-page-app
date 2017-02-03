@@ -7,6 +7,12 @@ body {
 	margin: 0;
 }
 
+@media (max-width: 400px) {
+	.body-wrap {
+		font-size: 14px;
+	}
+}
+
 .body-wrap {
 	margin: 1em 2em;
 	margin-top: 5em; /* for fixed header */
@@ -126,6 +132,14 @@ a:hover {
 	background-color: rgba(0, 0, 0, 0.2);
 }
 
-.home-wrap {
+.center-text {
 	text-align: center;
+}
+
+code {
+	padding: 0 5px;
+	color: firebrick;
+	border: 1px solid firebrick;
+	border-radius: 0.25rem;
+	font-size: 1em
 }
