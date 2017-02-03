@@ -4,7 +4,7 @@ var path = require('path');
 
 module.exports = {
   context: path.join(__dirname, "src"),
-  devtool: debug ? "inline-sourcemap" : null,
+  devtool: debug ? "inline-sourcemap" : false,
   entry: "./js/client.js",
   module: {
     loaders: [
@@ -24,8 +24,7 @@ module.exports = {
     filename: "client.min.js"
   },
   plugins: debug ? [] : [
-    new webpack.optimize.DedupePlugin(),
-    new webpack.optimize.OccurenceOrderPlugin(),
+	new webpack.optimize.OccurrenceOrderPlugin(),
     new webpack.optimize.UglifyJsPlugin({ mangle: false, sourcemap: false }),
   ],
 };
