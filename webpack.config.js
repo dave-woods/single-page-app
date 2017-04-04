@@ -1,11 +1,11 @@
-var debug = process.env.NODE_ENV !== "production";
-var webpack = require('webpack');
-var path = require('path');
+var debug = process.env.NODE_ENV !== 'production'
+var webpack = require('webpack')
+var path = require('path')
 
 module.exports = {
-  context: path.join(__dirname, "src"),
-  devtool: debug ? "inline-sourcemap" : false,
-  entry: "./js/client.js",
+  context: path.join(__dirname, 'src'),
+  devtool: debug ? 'inline-sourcemap' : false,
+  entry: './js/client.js',
   module: {
     loaders: [
       {
@@ -14,14 +14,14 @@ module.exports = {
         loader: 'babel-loader',
         query: {
           presets: ['react', 'es2015', 'stage-0'],
-          plugins: ['react-html-attrs', 'transform-decorators-legacy', 'transform-class-properties'],
+          plugins: ['react-html-attrs', 'transform-decorators-legacy', 'transform-class-properties']
         }
       }
     ]
   },
   output: {
-    path: __dirname + "/src/",
-    filename: "client.min.js"
+    path: path.join(__dirname, '/src/'),
+    filename: 'client.min.js'
   },
   plugins: debug ? [] : [
     new webpack.DefinePlugin({
@@ -29,7 +29,7 @@ module.exports = {
         NODE_ENV: JSON.stringify('production')
       }
     }),
-	  new webpack.optimize.OccurrenceOrderPlugin(),
-    new webpack.optimize.UglifyJsPlugin({ mangle: false, sourcemap: false }),
-  ],
-};
+    new webpack.optimize.OccurrenceOrderPlugin(),
+    new webpack.optimize.UglifyJsPlugin({ mangle: false, sourcemap: false })
+  ]
+}

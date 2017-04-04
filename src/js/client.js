@@ -9,16 +9,16 @@ import Teaching from './pages/Teaching.js'
 import Contact from './pages/Contact.js'
 import NotFound from './pages/NotFound.js'
 
-const app = document.getElementById('app');
+const app = document.getElementById('app')
 
 ReactDOM.render(
-	<Router history={browserHistory}>
-		<Route path="/" component={Layout}>
-			<IndexRoute component={Home}></IndexRoute>
-			<Route path="/research" component={Research}></Route>
-			<Route path="/teaching(/:page)" component={Teaching}></Route>
-			<Route path="/contact" component={Contact}></Route>
-			<Route path="*" component={NotFound}></Route>
-		</Route>
-	</Router>,
-app);
+  <Router history={browserHistory}>
+    <Route path='/' component={Layout}>
+      <IndexRoute component={Home} />
+      <Route path='/research' component={Research} />
+      <Route path='/teaching(/:page)' component={Teaching} />
+      <Route path='/contact' component={Contact} />
+      <Route path='*' component={NotFound} />
+    </Route>
+  </Router>,
+app)
