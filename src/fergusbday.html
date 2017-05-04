@@ -1,0 +1,56 @@
+<!doctype html>
+<html lang="en">
+<head>
+	<title>Happy Birthday Fergus!</title>
+<style>
+* {
+	font-family: Sans;
+	color: #333;
+	font-size: 18px;
+}
+body {
+	margin: 0;
+	padding: 0;
+	background-color: #e5e5e5;
+	display: flex;
+	justify-content: center;
+	align-items: center;
+	flex-direction: column;
+	height: 100vh;
+}
+h1 {
+	font-size: 3em;
+	text-align: center;
+}
+h3 {
+	font-size: 1.2em;
+	text-align: center;
+}
+h4 {
+	text-align: center;
+}
+</style>
+</head>
+<body>
+	<h1>Happy Birthday Fergus!</h1>
+	<h3>It has been<br /><span id="years">16</span> years, <span id="months">0</span> months, <span id="days"></span> days,<br /><span id="hours"></span> hours, <span id="minutes"></span> minutes, and <span id="seconds"></span> seconds<br />since May 5th, 2001.</h3>
+	<h4>Congrats on making it this far!</h4>
+</body>
+<script>
+const then = new Date("May 5, 2017 00:00:00").getTime()
+const d = document.getElementById('days')
+const h = document.getElementById('hours')
+const mi = document.getElementById('minutes')
+const s = document.getElementById('seconds')
+setInterval(function() {
+	let diff = Math.floor((Date.now() - then) / 1000)
+	d.innerHTML = Math.floor(diff / 86400)
+	diff = diff % 86400
+	h.innerHTML = Math.floor(diff / 3600)
+	diff = diff % 3600
+	mi.innerHTML = Math.floor(diff / 60)
+	diff = diff % 60
+	s.innerHTML = diff
+}, 1000)
+</script>
+</html>

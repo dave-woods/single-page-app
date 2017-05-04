@@ -5,6 +5,10 @@ const path = require('path')
 
 app.use(express.static(path.join(__dirname, '/src')))
 
+app.get('/5517', function (req, res) {
+  res.sendFile(path.resolve(__dirname, 'src', 'fergusbday.html'))
+})
+
 app.get('*', function (req, res) {
   res.sendFile(path.resolve(__dirname, 'src', 'index.html'))
 })
