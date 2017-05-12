@@ -33,18 +33,28 @@ h4 {
 </head>
 <body>
 	<h1>Happy Birthday Fergus!</h1>
-	<h3>It has been<br /><span id="years">16</span> years, <span id="months">0</span> months, <span id="days"></span> days,<br /><span id="hours"></span> hours, <span id="minutes"></span> minutes, and <span id="seconds"></span> seconds<br />since May 5th, 2001.</h3>
+	<h3>It has been<br /><span id="years">16</span> years, <span id="months"></span> months, <span id="days"></span> days,<br /><span id="hours"></span> hours, <span id="minutes"></span> minutes, and <span id="seconds"></span> seconds<br />since May 5th, 2001.</h3>
 	<h4>Congrats on making it this far!</h4>
 </body>
 <script>
 const then = new Date("May 5, 2017 00:00:00").getTime()
 const d = document.getElementById('days')
+const m = document.getElementById('months')
 const h = document.getElementById('hours')
 const mi = document.getElementById('minutes')
 const s = document.getElementById('seconds')
 setInterval(function() {
 	let diff = Math.floor((Date.now() - then) / 1000)
-	d.innerHTML = Math.floor(diff / 86400)
+	let days = Math.floor(diff / 86400)
+	let months = [31,30,31,31,30,31,30,31,31,28,31,30].reduce((acc, curr) => {
+		if (days - curr >= 0) {
+			days = days - curr
+			return acc + 1
+		}
+		return acc
+	}, 0)
+	m.innerHTML = months
+	d.innerHTML = days 
 	diff = diff % 86400
 	h.innerHTML = Math.floor(diff / 3600)
 	diff = diff % 3600
