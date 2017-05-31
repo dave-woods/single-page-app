@@ -1,0 +1,45 @@
+doctype html
+html
+  head
+    title= title
+    style(type='text/css').
+      html, body {
+        margin: 0;
+        font-family: 'sans-serif';
+        font-size: 18px;
+        line-height: 1.6;
+        background-color: #ddd;
+        color: #333;
+      }
+      .wrap--body {
+        padding: 2em;
+      }
+      form {
+        background-color: white;
+        border-radius: 0.5em;
+        padding: 2em;
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        align-items: flex-start;
+      }
+      label[for="tmlFile"] {
+        margin: 0 1em;
+      }
+      input[type="submit"] {
+        margin-top: 1em;
+        padding: 1em;
+        align-self: center;
+        border: 0;
+        border-radius: 0.3em;
+        font-weight: bold;
+        text-transform: uppercase;
+      }
+  body
+    .wrap--body
+      h2= title
+      form(action="/tml/corpus" method="POST" enctype="multipart/form-data")
+        .wrap--labelinput
+          label(for="tmlFile") TML File
+          input(type="file" name="tmlFile" id="tmlFile" accept=".tml, text/xml-external-parsed-entity, text/xml")
+        input(type="submit" value="Submit")

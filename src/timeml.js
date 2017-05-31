@@ -2,14 +2,21 @@ const fs = require('fs')
 const DOMParser = require('xmldom').DOMParser
 
 exports.handleTML = async (req, res) => {
-  fs.readFile(req.params.file, 'utf8', (err, data) => {
+  fs.readFile('tmp/uploads/' + req.params.file, 'utf8', (err, data) => {
     if (err) {
-      res.json({e: err.message})
+      res.json({error: err.message})
+      return
+    } else if (!data.startsWith('<?xml version="1.0"?><TimeML')) {
+      res.json({error: 'The file doesn\'t seem to be a valid TimeML file. Is it tagged correctly?'})
       return
     }
     const parser = new DOMParser()
     const xml = parser.parseFromString(data, 'text/xml')
     const tlinks = xml.getElementsByTagName('TLINK')
+    if (!tlinks || !tlinks.length) {
+      res.json({error: 'No TLINKs found'})
+      return
+    }
     const mapped = Array.prototype.map.call(tlinks, tl => {
       const reduced = Array.prototype.reduce.call(tl.attributes, (acc, att) => {
         // ignore signalling for now
