@@ -1,0 +1,18 @@
+doctype html
+html
+  head
+    title= `Data for ${file}`
+  body(style="font-family:sans-serif;margin:0;background-color:#ddd;")
+    .wrap--body(style="margin:1em;")
+      h2 Data for 
+        span(style="font-family:monospace;")= file
+      a(href=`${back}`) Back
+      .tlinks
+        h3= `Number of TLinks: ${data.length}`
+        .wrap--list(style="display:flex;flex-direction:row;justify-content:space-around;")
+          .strs(style="height:200px;overflow-y:auto;width:300px;background-color:#fff;padding:2em;")
+            h4 Strings
+            pre= JSON.stringify(data.strs, null, 2)
+          .stats(style="height:200px;overflow-y:auto;width:300px;background-color:#fff;padding:2em;")
+            h4 Statistics
+            pre= JSON.stringify(data.stats, null, 2)

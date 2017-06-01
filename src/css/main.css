@@ -136,6 +136,13 @@ a:hover {
 	text-align: center;
 }
 
+.local-links h4 {
+	margin-bottom: 0.5em;
+}
+.local-links ol {
+	margin: 0;
+}
+
 code {
 	padding: 0 5px;
 	color: firebrick;

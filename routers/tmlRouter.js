@@ -25,10 +25,15 @@ router.post('/corpus', upload, (req, res) => {
   const fpath = `./tmp/uploads/${req.file.filename}`
   axios.get(`http://localhost:8080/timeml/${req.file.filename}`)
     .then(results => {
-      if (results.data && results.data.len) {
-        res.json(results.data)
+      if (results.data && results.data.length) {
+        res.render('tml/data', {
+          file: req.file.originalname,
+          data: results.data,
+          back: req.header('Referrer')
+        })
       } else {
         res.json({ err: 'No data found' })
+        console.log(results)
       }
     })
     .catch(err => {
