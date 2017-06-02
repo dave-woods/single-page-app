@@ -1,18 +1,26 @@
 doctype html
 html
   head
-    title= `Data for ${file}`
+    if file
+      title= `Data for ${file}`
+    else
+      title No File Sent
   body(style="font-family:sans-serif;margin:0;background-color:#ddd;")
     .wrap--body(style="margin:1em;")
-      h2 Data for 
-        span(style="font-family:monospace;")= file
-      a(href=`${back}`) Back
-      .tlinks
-        h3= `Number of TLinks: ${data.length}`
-        .wrap--list(style="display:flex;flex-direction:row;justify-content:space-around;")
-          .strs(style="height:200px;overflow-y:auto;width:300px;background-color:#fff;padding:2em;")
-            h4 Strings
-            pre= JSON.stringify(data.strs, null, 2)
-          .stats(style="height:200px;overflow-y:auto;width:300px;background-color:#fff;padding:2em;")
-            h4 Statistics
-            pre= JSON.stringify(data.stats, null, 2)
+      if file
+        h2 Data for 
+          span(style="font-family:monospace;")= file
+      else
+        h2 No File Sent
+      form(action="/tml"  method="GET")
+        input(type="submit" value="Upload new file")
+      if data
+        .tlinks
+          h3= `Number of TLinks: ${data.length}`
+          .wrap--list(style="display:flex;flex-direction:row;justify-content:space-around;")
+            .strs(style="height:200px;overflow-y:auto;width:300px;background-color:#fff;padding:2em;")
+              h4 Strings
+              pre= JSON.stringify(data.strs, null, 2)
+            .stats(style="height:200px;overflow-y:auto;width:300px;background-color:#fff;padding:2em;")
+              h4 Statistics
+              pre= JSON.stringify(data.stats, null, 2)

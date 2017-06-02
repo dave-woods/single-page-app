@@ -29,30 +29,32 @@ exports.handleTML = async (req, res) => {
       return reduced
     })
     const stats = mapped.reduce((acc, tl) => {
-      if (tl.eventInstanceID) {
-        if (acc.eventInstanceIDs[tl.eventInstanceID]) {
-          acc.eventInstanceIDs[tl.eventInstanceID] += 1
+      const ei = tl.eventInstanceID
+      const rei = tl.relatedToEventInstance
+      const t = tl.timeID
+      const rt = tl.relatedToTime
+      const updateAcc = (a, l, x) => {
+        if (a[l][x]) {
+          a[l][x] += 1
         } else {
-          acc.eventInstanceIDs[tl.eventInstanceID] = 1
+          a[l][x] = 1
         }
-        if (!acc.mostFrequent || (acc.eventInstanceIDs[tl.eventInstanceID] > acc.mostFrequent.count)) {
-          acc.mostFrequent = {
-            id: tl.eventInstanceID,
-            count: acc.eventInstanceIDs[tl.eventInstanceID]
+        if (!a.mostFrequent || (a[l][x] > a.mostFrequent.count)) {
+          a.mostFrequent = {
+            id: x,
+            count: a[l][x]
           }
         }
-      } else if (tl.timeID) {
-        if (acc.timeIDs[tl.timeID]) {
-          acc.timeIDs[tl.timeID] += 1
-        } else {
-          acc.timeIDs[tl.timeID] = 1
-        }
-        if (!acc.mostFrequent || (acc.timeIDs[tl.timeID] > acc.mostFrequent.count)) {
-          acc.mostFrequent = {
-            id: tl.timeID,
-            count: acc.timeIDs[tl.timeID]
-          }
-        }
+      }
+      if (ei) {
+        updateAcc(acc, 'eventInstanceIDs', ei)
+      } else if (t) {
+        updateAcc(acc, 'timeIDs', t)
+      }
+      if (rei) {
+        updateAcc(acc, 'eventInstanceIDs', rei)
+      } else if (rt) {
+        updateAcc(acc, 'timeIDs', rt)
       }
       return acc
     }, {timeIDs: {}, eventInstanceIDs: {}})
