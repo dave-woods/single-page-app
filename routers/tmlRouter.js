@@ -27,7 +27,8 @@ router.post('/corpus', upload, (req, res) => {
     return
   }
   const fpath = `./tmp/uploads/${req.file.filename}`
-  axios.get(`http://localhost:8080/timeml/${req.file.filename}`)
+  axios.defaults.baseURL = req.protocol + '://' + req.get('host')
+  axios.get(`/timeml/${req.file.filename}`)
     .then(results => {
       if (results.data && results.data.length) {
         res.render('tml/data', {
