@@ -28,10 +28,12 @@ html
             .stats(style="height:200px;overflow-y:auto;width:300px;background-color:#fff;padding:2em;")
               h4 Statistics
               pre= JSON.stringify(data.stats, null, 2)
-        h3.hide-text(title="Click to show/hide" style="cursor:pointer;text-decoration:underline;") Text
-        .filetext(style="max-width:1000px;background-color:white;margin:1em;padding:2em;height:600px;overflow-y:auto;")
-          pre(style="white-space:pre-wrap;")= data.text
+        h3.text-xml(title="Click to toggle between text and original XML" style="cursor:pointer;text-decoration:underline;") Text / XML
+        .file-contents(style="max-width:1000px;background-color:white;margin:1em;padding:2em;height:600px;overflow-y:auto;")
+          pre.file-text(style="white-space:pre-wrap;")= data.text
+          pre.file-xml.hidden(style="white-space:pre-wrap;")= data.xml
         script.
-          document.querySelector('.hide-text').addEventListener('click', (e) => {
-            document.querySelector('.filetext').classList.toggle('hidden')
+          document.querySelector('.text-xml').addEventListener('click', (e) => {
+            document.querySelector('.file-text').classList.toggle('hidden')
+            document.querySelector('.file-xml').classList.toggle('hidden')
           })

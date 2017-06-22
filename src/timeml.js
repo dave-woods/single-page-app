@@ -64,7 +64,8 @@ exports.handleTML = (fileloc) => async (req, res) => {
       tlinks: mapped,
       strs,
       stats,
-      text: data
+      xml: data,
+      text: xml.documentElement.textContent.trim()
     })
   })
 }
