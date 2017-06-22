@@ -63,7 +63,8 @@ exports.handleTML = async (req, res) => {
       length: strs.length,
       tlinks: mapped,
       strs,
-      stats
+      stats,
+      text: data
     })
   })
 }

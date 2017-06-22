@@ -5,6 +5,10 @@ html
       title= `Data for ${file}`
     else
       title No File Sent
+    style(type="text/css").
+      .hidden {
+        display: none;
+      }
   body(style="font-family:sans-serif;margin:0;background-color:#ddd;")
     .wrap--body(style="margin:1em;")
       if file
@@ -15,7 +19,7 @@ html
       form(action="/tml"  method="GET")
         input(type="submit" value="Upload new file")
       if data
-        .tlinks
+        .tlinks(style="max-width:1000px;")
           h3= `Number of TLinks: ${data.length}`
           .wrap--list(style="display:flex;flex-direction:row;justify-content:space-around;")
             .strs(style="height:200px;overflow-y:auto;width:300px;background-color:#fff;padding:2em;")
@@ -24,3 +28,10 @@ html
             .stats(style="height:200px;overflow-y:auto;width:300px;background-color:#fff;padding:2em;")
               h4 Statistics
               pre= JSON.stringify(data.stats, null, 2)
+        h3.hide-text(title="Click to show/hide" style="cursor:pointer;text-decoration:underline;") Text
+        .filetext(style="max-width:1000px;background-color:white;margin:1em;padding:2em;height:600px;overflow-y:auto;")
+          pre(style="white-space:pre-wrap;")= data.text
+        script.
+          document.querySelector('.hide-text').addEventListener('click', (e) => {
+            document.querySelector('.filetext').classList.toggle('hidden')
+          })
