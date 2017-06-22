@@ -1,8 +1,8 @@
 const fs = require('fs')
 const DOMParser = require('xmldom').DOMParser
 
-exports.handleTML = async (req, res) => {
-  fs.readFile('tmp/uploads/' + req.params.file, 'utf8', (err, data) => {
+exports.handleTML = (fileloc) => async (req, res) => {
+  fs.readFile(fileloc + req.params.file, 'utf8', (err, data) => {
     if (err) {
       res.json({error: err.message})
       return

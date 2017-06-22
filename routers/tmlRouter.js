@@ -21,6 +21,33 @@ router.get('/', (req, res) => {
   })
 })
 
+router.get('/default/:file', (req, res) => {
+  let corp
+  if (req.params.file === '1') {
+    corp = 'corp1.tml'
+  } else if (req.params.file === '2') {
+    corp = 'corp2.tml'
+  } else {
+    res.json({ err: 'Not a default file' })
+    return
+  }
+  axios.defaults.baseURL = req.protocol + '://' + req.get('host')
+  axios.get(`/timeml/default/${corp}`)
+    .then(results => {
+      if (results.data && results.data.length) {
+        res.render('tml/data', {
+          file: corp,
+          data: results.data
+        })
+      } else {
+        res.json({ err: 'No data found', corp })
+      }
+    })
+    .catch(err => {
+      res.json(err)
+    })
+})
+
 router.post('/corpus', upload, (req, res) => {
   if (!req.file || !req.file.filename) {
     res.render('tml/data', {})

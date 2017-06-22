@@ -24,7 +24,8 @@ app.get('/5517', function (req, res) {
   res.sendFile(path.resolve(__dirname, 'views', 'fergusbday.html'))
 })
 
-app.get('/timeml/:file', tml.handleTML)
+app.get('/timeml/default/:file', tml.handleTML('defaults/'))
+app.get('/timeml/:file', tml.handleTML('tmp/uploads/'))
 
 app.get('*', function (req, res) {
   res.sendFile(path.resolve(__dirname, 'src', 'index.html'))

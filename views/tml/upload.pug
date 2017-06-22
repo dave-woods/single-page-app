@@ -22,6 +22,7 @@ html
         flex-direction: column;
         justify-content: center;
         align-items: flex-start;
+        max-width: 600px;
       }
       label[for="tmlFile"] {
         margin: 0 1em;
@@ -35,6 +36,10 @@ html
         font-weight: bold;
         text-transform: uppercase;
       }
+      a {
+        display: block;
+        margin: 1em;
+      }
   body
     .wrap--body
       h2= title
@@ -43,3 +48,5 @@ html
           label(for="tmlFile") TML File
           input(type="file" name="tmlFile" id="tmlFile" accept=".tml, text/xml-external-parsed-entity, text/xml" required)
         input(type="submit" value="Submit")
+      a(href="/tml/default/1") Example file 1
+      a(href="/tml/default/2") Example file 2
