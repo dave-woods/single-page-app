@@ -20,6 +20,10 @@ app.use('/test', testRouter)
 app.use('/evermore', emRouter)
 app.use('/tml', tmlRouter)
 
+app.get('/favicon.ico', (req, res) => {
+  res.sendFile(path.resolve(__dirname, 'favicon.ico'))
+})
+
 app.get('/5517', function (req, res) {
   res.sendFile(path.resolve(__dirname, 'views', 'fergusbday.html'))
 })
