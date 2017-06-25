@@ -7,7 +7,7 @@ module.exports = {
   devtool: debug ? 'inline-sourcemap' : false,
   entry: {
     client: './src/js/client.js',
-    successive: './public/scripts/successive.js'
+    successive: './src/js/successive.js'
   },
   module: {
     loaders: [
