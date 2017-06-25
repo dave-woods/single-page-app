@@ -1,0 +1,15 @@
+doctype html
+head
+  title To Do
+  style.
+    * {
+      font-family: 'Arial'
+    }
+body
+  h1= title
+  ul
+    for todo in todos
+      li(style="display: flex; flex-flow: row nowrap; justify-content: space-between; margin-right: 10em;")
+        span= todo.desc
+        span= todo.completed
+
