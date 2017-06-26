@@ -26,5 +26,9 @@
   {
     "desc": "Updateable todos",
     "completed": "true"
+  },
+  {
+    "desc": "Add users and sessions",
+    "completed": "true"
   }
 ]

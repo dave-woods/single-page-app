@@ -30,6 +30,7 @@ body
           span(title="Remove Item").remove ✕
   input.new-item(type="text" placeholder="New Item..." style="margin-left:40px;width:20em;")
   button.add-new-item Add Item
-  script.
-    const todos =!{JSON.stringify(todos)}
-  script(src="/scripts/todo.js")
+  if user
+    script.
+      const todos =!{JSON.stringify(todos)}
+    script(src="/scripts/todo.js")

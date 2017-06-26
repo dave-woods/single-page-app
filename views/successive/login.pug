@@ -1,0 +1,30 @@
+doctype html
+html
+  head
+    title Login
+    style.
+      form {
+        display: flex;
+        flex-direction: column;
+      }
+      label {
+        margin-right: 1em;
+      }
+      form > div {
+        margin: 0.5em;
+      }
+      .error {
+        color: red;
+      }
+  body
+    if error
+      h4.error= error
+    form(method="POST")
+      div
+        label(for="user") Username
+        input(type="text" name="user" required)
+      div
+        label(for="password") Password
+        input(type="password" name="password" required)
+      div
+        input(type="submit" value="Log in")
