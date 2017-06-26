@@ -1,4 +1,5 @@
 const router = require('express').Router()
+const fs = require('fs')
 
 router.get('/', (req, res) => {
   res.render('successive/main', {
@@ -7,39 +8,16 @@ router.get('/', (req, res) => {
 })
 
 router.get('/todo', (req, res) => {
+  const todos = JSON.parse(fs.readFileSync('data/todos.json', 'utf8'))
   res.render('successive/todo', {
     title: 'To Do',
-    todos: [
-      {
-        desc: 'Gradient styles',
-        completed: false
-      },
-      {
-        desc: 'Add new tasks',
-        completed: false
-      },
-      {
-        desc: 'Daily labels',
-        completed: false
-      },
-      {
-        desc: 'One completion a day',
-        completed: false
-      },
-      {
-        desc: 'Check if day is missed',
-        completed: false
-      },
-      {
-        desc: 'Grid-like styling',
-        completed: false
-      },
-      {
-        desc: 'Updateable todos',
-        completed: false
-      }
-    ]
+    todos
   })
+})
+
+router.post('/todo', (req, res) => {
+  fs.writeFileSync('data/todos.json', JSON.stringify(req.body, null, 2))
+  res.json(req.body)
 })
 
 module.exports = router

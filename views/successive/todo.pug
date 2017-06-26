@@ -5,11 +5,31 @@ head
     * {
       font-family: 'Arial'
     }
+    li.todo {
+      display: flex;
+      flex-flow: row nowrap;
+      justify-content: space-between;
+      margin-right: 10em;
+    }
+    span.completed {
+      cursor: pointer;
+    }
+    span.remove {
+      color: red;
+      cursor: pointer;
+      margin-left: 1em;
+    }
 body
   h1= title
-  ul
-    for todo in todos
-      li(style="display: flex; flex-flow: row nowrap; justify-content: space-between; margin-right: 10em;")
-        span= todo.desc
-        span= todo.completed
-
+  ul.todos
+    each todo, index in todos
+      li.todo
+        span.desc= todo.desc
+        span
+          span(title="Complete Item").completed= todo.completed
+          span(title="Remove Item").remove ✕
+  input.new-item(type="text" placeholder="New Item..." style="margin-left:40px;width:20em;")
+  button.add-new-item Add Item
+  script.
+    const todos =!{JSON.stringify(todos)}
+  script(src="/scripts/todo.js")
