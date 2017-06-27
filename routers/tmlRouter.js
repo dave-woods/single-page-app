@@ -21,6 +21,23 @@ router.get('/', (req, res) => {
   })
 })
 
+router.get('/write(/tex)?', (req, res) => {
+  const opts = {
+    root: 'data',
+    dotfile: 'deny',
+    headers: {
+      'x-timestamp': Date.now(),
+      'x-sent': true,
+      'Content-Type': `${req.params[0] === '/tex' ? 'text/plain' : 'application/pdf'}`
+    }
+  }
+  res.sendFile(`write/current.${req.params[0] === '/tex' ? 'tex' : 'pdf'}`, opts, (err) => {
+    if (err) {
+      res.json({error: (err.code === 'ENOENT' ? 'No current draft available' : err.message)})
+    }
+  })
+})
+
 router.get('/data/:file', (req, res) => {
   let corp
   if (req.params.file === '1') {
