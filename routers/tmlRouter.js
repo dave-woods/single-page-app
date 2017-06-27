@@ -21,7 +21,7 @@ router.get('/', (req, res) => {
   })
 })
 
-router.get('/default/:file', (req, res) => {
+router.get('/data/:file', (req, res) => {
   let corp
   if (req.params.file === '1') {
     corp = 'corp1.tml'
@@ -32,7 +32,7 @@ router.get('/default/:file', (req, res) => {
     return
   }
   axios.defaults.baseURL = req.protocol + '://' + req.get('host')
-  axios.get(`/timeml/default/${corp}`)
+  axios.get(`/timeml/data/${corp}`)
     .then(results => {
       if (results.data && results.data.length) {
         res.render('tml/data', {

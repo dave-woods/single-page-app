@@ -1,0 +1,38 @@
+[
+  {
+    "desc": "Gradient styles",
+    "completed": "false"
+  },
+  {
+    "desc": "Add new tasks",
+    "completed": "false"
+  },
+  {
+    "desc": "Daily labels",
+    "completed": "false"
+  },
+  {
+    "desc": "One completion a day",
+    "completed": "false"
+  },
+  {
+    "desc": "Check if day is missed",
+    "completed": "false"
+  },
+  {
+    "desc": "Grid-like styling",
+    "completed": "false"
+  },
+  {
+    "desc": "Updateable todos",
+    "completed": "true"
+  },
+  {
+    "desc": "Add users and sessions",
+    "completed": "true"
+  },
+  {
+    "desc": "Add Successive to homepage link list",
+    "completed": "false"
+  }
+]

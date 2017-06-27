@@ -3,9 +3,12 @@ var webpack = require('webpack')
 var path = require('path')
 
 module.exports = {
-  context: path.join(__dirname, 'src'),
+  // context: path.join(__dirname, 'src'),
   devtool: debug ? 'inline-sourcemap' : false,
-  entry: './js/client.js',
+  entry: {
+    client: './src/js/client.js',
+    successive: './src/js/successive.js'
+  },
   module: {
     loaders: [
       {
@@ -21,7 +24,7 @@ module.exports = {
   },
   output: {
     path: path.join(__dirname, '/src/'),
-    filename: 'client.min.js'
+    filename: '[name].min.js'
   },
   plugins: debug ? [] : [
     new webpack.DefinePlugin({
