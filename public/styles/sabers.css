@@ -6,12 +6,12 @@
 
 .blue {
   transform: translate(200px) rotate(40deg);
-  animation: blueswing 6s linear infinite;
+  animation: blueswing 6s ease-in-out infinite;
 }
 
 .red {
   transform: translate(400px) rotate(-60deg);
-  animation: redswing 6s linear infinite;
+  animation: redswing 6s ease-in-out infinite;
 }
 
 .lightsaber .blade {
@@ -25,10 +25,12 @@
 
 .blue .blade {
   box-shadow: 0 0 7px 5px #0088ee, inset 0 0 7px 2px #0088ee;
+  animation: bluepulse 1s ease-in-out infinite;
 }
 
 .red .blade {
   box-shadow: 0 0 7px 5px #ee1100, inset 0 0 7px 2px #ee1100;
+  animation: redpulse 1.5s ease-in-out infinite;
 }
 
 .lightsaber .hilt {
@@ -163,18 +165,90 @@
     transform: translate(700px) rotate(20deg);
   }
   65% {
-    transform: translate(500px) rotate(10deg);
+    transform: translate(500px) rotate(10deg)
   }
   70% {
-    transform: translate(450px, 100px) rotate(-5deg);
+    transform: translate(450px, 100px) rotate(-5deg)
   }
   75% {
-    transform: translate(600px) rotate(-15deg);
+    transform: translate(600px) rotate(-15deg)
   }
   90% {
-    transform: translate(700px) rotate(5deg);
+    transform: translate(700px) rotate(5deg)
   }
   100% {
-    transform: translate(400px) rotate(-60deg);
+    transform: translate(400px) rotate(-60deg)
+  }
+}
+
+@keyframes redpulse {
+  0% {
+    box-shadow: 0 0 7px 5px #ee1100, inset 0 0 7px 2px #ee1100;
+  }
+  10% {
+    box-shadow: 0 0 9px 7px #ee1100, inset 0 0 8px 4px #ee1100;
+  }
+  20% {
+    box-shadow: 0 0 7px 5px #ee1100, inset 0 0 7px 2px #ee1100;
+  }
+  30% {
+    box-shadow: 0 0 9px 7px #ee1100, inset 0 0 9px 4px #ee1100;
+  }
+  40% {
+    box-shadow: 0 0 7px 5px #ee1100, inset 0 0 7px 2px #ee1100;
+  }
+  50% {
+    box-shadow: 0 0 9px 7px #ee1100, inset 0 0 8px 4px #ee1100;
+  }
+  60% {
+    box-shadow: 0 0 7px 5px #ee1100, inset 0 0 7px 2px #ee1100;
+  }
+  70% {
+    box-shadow: 0 0 9px 7px #ee1100, inset 0 0 9px 4px #ee1100;
+  }
+  80% {
+    box-shadow: 0 0 7px 5px #ee1100, inset 0 0 7px 2px #ee1100;
+  }
+  90% {
+    box-shadow: 0 0 9px 7px #ee1100, inset 0 0 8px 4px #ee1100;
+  }
+  100% {
+    box-shadow: 0 0 7px 5px #ee1100, inset 0 0 7px 2px #ee1100;
+  }
+}
+
+@keyframes bluepulse {
+  0% {
+    box-shadow: 0 0 7px 5px #0088ee, inset 0 0 7px 2px #0088ee;
+  }
+  10% {
+    box-shadow: 0 0 9px 7px #0088ee, inset 0 0 8px 4px #0088ee;
+  }
+  20% {
+    box-shadow: 0 0 7px 5px #0088ee, inset 0 0 7px 2px #0088ee;
+  }
+  30% {
+    box-shadow: 0 0 9px 7px #0088ee, inset 0 0 9px 4px #0088ee;
+  }
+  40% {
+    box-shadow: 0 0 7px 5px #0088ee, inset 0 0 7px 2px #0088ee;
+  }
+  50% {
+    box-shadow: 0 0 9px 7px #0088ee, inset 0 0 8px 4px #0088ee;
+  }
+  60% {
+    box-shadow: 0 0 7px 5px #0088ee, inset 0 0 7px 2px #0088ee;
+  }
+  70% {
+    box-shadow: 0 0 9px 7px #0088ee, inset 0 0 9px 4px #0088ee;
+  }
+  80% {
+    box-shadow: 0 0 7px 5px #0088ee, inset 0 0 7px 2px #0088ee;
+  }
+  90% {
+    box-shadow: 0 0 9px 7px #0088ee, inset 0 0 8px 4px #0088ee;
+  }
+  100% {
+    box-shadow: 0 0 7px 5px #0088ee, inset 0 0 7px 2px #0088ee;
   }
 }
