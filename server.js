@@ -33,7 +33,7 @@ app.get('/5517', function (req, res) {
   res.sendFile(path.resolve(__dirname, 'views', 'fergusbday.html'))
 })
 
-app.get('/timeml/default/:file', tml.handleTML('defaults/'))
+app.get('/timeml/data/:file', tml.handleTML('data/'))
 app.get('/timeml/:file', tml.handleTML('tmp/uploads/'))
 
 app.get('*', function (req, res) {
