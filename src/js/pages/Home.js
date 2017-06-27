@@ -14,6 +14,7 @@ export default class Home extends React.Component {
           <h4>Local Links</h4>
           <ol>
             <li><a href='/tml'>TimeML</a></li>
+            <li><a href='/successive'>Successive</a></li>
           </ol>
         </div>
       </div>

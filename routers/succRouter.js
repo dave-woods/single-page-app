@@ -42,6 +42,9 @@ router.get('/logout', (req, res, next) => {
   if (req.session.user) {
     delete req.session.user
   }
+  if (req.session.stamp) {
+    delete req.session.stamp
+  }
   res.redirect('login')
   return next()
 })

@@ -33,6 +33,18 @@
   },
   {
     "desc": "Add Successive to homepage link list",
+    "completed": "true"
+  },
+  {
+    "desc": "Replace favicon",
+    "completed": "true"
+  },
+  {
+    "desc": "Add navigation links",
+    "completed": "false"
+  },
+  {
+    "desc": "Add persistent log in/out button",
     "completed": "false"
   }
 ]
