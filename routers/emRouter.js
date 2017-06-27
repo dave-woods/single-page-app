@@ -29,6 +29,10 @@ router.get('/fs', async (req, res) => {
   }
 })
 
+router.get('/sabers', (req, res) => {
+  res.render('evermore/sabers')
+})
+
 router.get('*', (req, res) => {
   res.json({error: {
     status: 404,
