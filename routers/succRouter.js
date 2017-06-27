@@ -4,29 +4,38 @@ const crypto = require('crypto')
 
 function checkAuth (req, res, next) {
   if (!req.session.user) {
+    saveSession(req, res)
     res.send('Unauthorised access. Please <a href="login">log in</a>.')
   } else {
     next()
   }
 }
-
-router.use(function (req, res, next) {
+function loadSession (req, res, next) {
   const session = JSON.parse(fs.readFileSync('data/session.json', 'utf8'))
   if (!req.session) {
     req.session = {}
   }
-  req.session = Object.assign({}, session, req.session)
+  if (session && (Date.now() - session.stamp < 3600000)) { // one hour
+    req.session = Object.assign({}, session, req.session)
+  }
   return next()
-})
+}
+function saveSession (req, res, next) {
+  fs.writeFileSync('data/session.json', JSON.stringify(req.session, null, 2))
+}
+
+router.use(loadSession)
 
 router.get('/', (req, res, next) => {
   res.render('successive/main', {
     title: 'Successive'
   })
+  next()
 })
 
 router.get('/login', (req, res, next) => {
   res.render('successive/login')
+  next()
 })
 
 router.get('/logout', (req, res, next) => {
@@ -42,6 +51,7 @@ router.post('/login', (req, res, next) => {
   const pw = crypto.createHash('sha256').update(req.body.password).digest('hex')
   if (users[req.body.user] && users[req.body.user].password === pw) {
     req.session.user = req.body.user
+    req.session.stamp = Date.now()
     res.redirect('todo')
     return next()
   } else {
@@ -58,6 +68,7 @@ router.get('/todo', checkAuth, (req, res, next) => {
     todos,
     user: req.session.user
   })
+  next()
 })
 
 router.post('/todo', (req, res, next) => {
@@ -65,9 +76,6 @@ router.post('/todo', (req, res, next) => {
   res.json(req.body)
 })
 
-router.use(function (req, res, next) {
-  fs.writeFileSync('data/session.json', JSON.stringify(req.session, null, 2))
-  // return next()
-})
+router.use(saveSession)
 
 module.exports = router
