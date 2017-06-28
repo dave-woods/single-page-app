@@ -19,7 +19,7 @@ html
   body
     if error
       h4.error= error
-    form(method="POST")
+    form(method="POST" autocomplete="off")
       div
         label(for="user") Username
         input(type="text" name="user" required)

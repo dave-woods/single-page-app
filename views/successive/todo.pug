@@ -11,8 +11,17 @@ head
       justify-content: space-between;
       margin-right: 10em;
     }
+    span.edit {
+      margin-right: 1em;
+      cursor: pointer;
+    }
+    span.desc {
+      flex: 1 1 auto;
+    }
     span.completed {
       cursor: pointer;
+      width: 3em;
+      text-align: right;
     }
     span.remove {
       color: red;
@@ -24,10 +33,10 @@ body
   ul.todos
     each todo, index in todos
       li.todo
+        span(title="Edit Item").edit &#9998
         span.desc= todo.desc
-        span
-          span(title="Complete Item").completed= todo.completed
-          span(title="Remove Item").remove ✕
+        span(title="Complete Item").completed= todo.completed
+        span(title="Remove Item").remove ✕
   input.new-item(type="text" placeholder="New Item..." style="margin-left:40px;width:20em;")
   button.add-new-item Add Item
   if user

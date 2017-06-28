@@ -8,7 +8,7 @@
     "completed": "false"
   },
   {
-    "desc": "Daily labels",
+    "desc": "Day-to-day labels",
     "completed": "false"
   },
   {
@@ -46,5 +46,13 @@
   {
     "desc": "Add persistent log in/out button",
     "completed": "false"
+  },
+  {
+    "desc": "Disable autocomplete on log in form",
+    "completed": "true"
+  },
+  {
+    "desc": "Make todos editable",
+    "completed": "true"
   }
 ]
