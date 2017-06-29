@@ -80,7 +80,7 @@ these resultant strings which may be used to infer new information.
 We believe strings pose a strong candidate for modelling this information over 
 other approaches such as models based in predicate logic, which may inform an 
 infinite number of possibilities, whereas strings are computational entities, 
-and are often simpler to handle, being able to operate on the level of 
+and are often simpler to handle, as we are able to operate on the level of 
 individual strings, which would be impossible using other models.
 
 An \textit{event-string} is a string $s \in \Sigma^+$ for an alphabet 
@@ -96,9 +96,8 @@ have held before the moment indexed by $j$ if and only if $i < j$.
 The precise duration of each moment is taken as unimportant in the current 
 discussion, 
 and thus the strings model an inertial world, whereby \textit{change} is the 
-only mark of progression from one moment to the next -- as Aristotle said, 
-``there is no time 
-without change".
+only mark of progression from one moment to the next -- ``there is no time 
+without change" (Aristotle).
 
 Thus, if $\alpha_i = \alpha_{i+1}$ for any 
 $1 \leq i < n$, then either symbol may be safely deleted from $s$ without 
@@ -138,7 +137,7 @@ L ~\&~ L' & \ :=\ \bigcup_{n\geq 0}
 \end{align*}
 For example, $L ~\&~ \fbox{\vph{'}}^\ast = L$.
 If $L$ and $L'$ are regular languages computed by finite automata
-with transitions $\to$ and $\to'$, then the superposition $L\& L'$ is
+with transitions $\to$ and $\to'$, then the superposition $L~\&~ L'$ is
 a regular language computed by a finite automaton with transitions
 $\Rightarrow$
 formed by running $\to$ and $\to'$ in lockstep
@@ -148,7 +147,8 @@ according to the rule
 	(q,q') \sta{\alpha\cup\alpha'}{\Rightarrow} (r,r')}
 \end{align*}
 The disadvantage of this process is that it requires the strings to be of equal 
-length, which is an idealised situation. In order to work around this, we may 
+length, which is an idealised situation. In order to work around this, and 
+introduce asynchrony, we may 
 manipulate the strings in such a way that they conform to our needs. For 
 example, we 
 can cause a string $s=\alpha_1\cdots\alpha_n$ to \textit{stutter} such that 
@@ -391,13 +391,42 @@ We assume that every fluent we encounter has exactly one beginning and one
 ending -- that is, that events do not \textit{resume} once they have ended. 
 Events of the same type may stop and start frequently, but by assuming that 
 every instance of an event will have a uniquely identifying fluent, we can 
-discard any strings which feature such a resumption. We also have the 
-constraint that fluents may be referred to multiple times
+discard any strings which feature such a resumption.
 
-% Isolated fluents
-% Reconciled fluents
-% Disallowed sequences
+Additionally, fluents 
+may be referred to multiple times by different TLINKs in an annotated document, 
+and we assume that they will be \textit{consistent} within the context of that 
+document \textit{i.e.} if a relation holds between $e$ and $e'$, and a relation 
+holds between $e'$ and $e''$, then both instances of $e'$ refer to the same 
+fluent, and the two relations will not contradict each other.
 
+These last two points are interesting in particular, as they lead to a specific 
+kind of superposition between strings $s, s' \in \Sigma^+$ when some 
+symbol $\alpha \in s$ is equal to some other symbol $\alpha' \in s'$. In this 
+scenario, the symbols must unify when superposing the strings, in order to 
+create a well-formed event-string in accordance with the above two constraints. 
+The algorithm in this case involves using the $pad_k$ operation on each string 
+as usual, but with the maximum length reduced to $n + n' - 3$ (where $n$ and 
+$n'$ are the lengths of $s$ and $s'$, respectively). However, at this point, 
+superposition is only carried out on those results of padding where the indices 
+of any shared fluents match exactly.
+
+%$\hat{s} = pad_{n+n'-3}(s)$
+
+%$s^@ = \{ \hat{s} = \alpha_1 \cdots \alpha_n ~|~ \}$
+
+Finally, we may also introduce simple binary constraints if external 
+information is 
+available (\textit{e.g.} ``the string may not begin with $e$"), and these might 
+be 
+simply intersected with the result of a superposition: $(s\ \&_{\bc} \ s') \cap 
+C$, where $C$ represents the constraints to be applied.
+
+\section{title}
+Something else goes here.
+
+\section{Conclusion}
+In this paper we have done a thing.
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %                                                                              %
 %                             Actual Document Ends                             %
