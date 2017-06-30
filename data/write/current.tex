@@ -48,30 +48,13 @@
 %	\item Hybrid approach
 %	\item Added constraints before superposition
 %\end{itemize}
+
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %                                                                              %
 %                            Actual Document Begins                            %
 %                                                                              %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \section{Introduction}
-%The task of interpreting temporal information in text necessitates a strong 
-%representational model.
-%
-%Text such as 
-%
-%Extracting 
-%
-%In modelling this information for computation, there is a usefulness in having 
-%a string-based representation, as strings are necessarily finite, while models 
-%may be infinite.
-%
-%We use strings as a basis for representing event data in a computationally 
-%tractable way. Strings allow us to bring information together such that it is 
-%both human-readable and digitally-operable.
-%
-%In contrast to the models of predicate logic, which may be infinite, strings 
-%are useful both as models and as computational entities.
-
 This paper explores using string-based models to effectively represent event 
 data such as might be found in a document annotated with TimeML. It is 
 described how such data may be simply translated to strings, as well as 
@@ -217,7 +200,7 @@ of length $n+n'-1$.
 \paragraph{Proposition 1.} {\sl For all  $s, s' \in \Sigma^+$
 and all $s''\in s\ \hat{\&}\ s'$,}
 \begin{align*}
-length(s'')\ \leq\ length(s) + length(s') -1
+\mbox{length}(s'')\ \leq\ \mbox{length}(s) + \mbox{length}(s') -1
 \end{align*}
 \noindent
 For all $s,s'\in \Sigma^{\ast}$, we define a finite set
@@ -259,9 +242,6 @@ $\Sigma$, we introduce a new
 function 
 $pad_k$ which will generate the set of strings with length $k$ which are 
 $\bc$-equivalent to $s$:
-%For $s=\alpha_1\cdots\alpha_n$,
-%let $\rr_k(\alpha_1\cdots\alpha_n)$ consist of strings 
-%in $\alpha_1^+\cdots\alpha_n^+$ of length $k$ 
 \begin{align*}
 pad_k(\alpha_1\cdots\alpha_n)~:=&~~\alpha_1^+\cdots\alpha_n^+\ \cap\ \Sigma^k \\
 =&~~\{
@@ -364,10 +344,8 @@ another relation between $e'$ and $e''$, and from this we may infer the
 possible 
 relations between $e$ and $e''$.
 
-% Do I need to prove this?
-% Define "well-formed event-string"
 As asynchronous superposition is a commutative, associative, homomorphic binary 
-relation over \iffalse{}well-formed\fi{}event-strings, we may superpose 
+relation over event-strings, we may superpose 
 arbitrary numbers of event-strings: $s ~\&_{\bc}~ s' ~\&_{\bc}~ s'' ~\&_{\bc}~ 
 \cdots$. Note, however, that superposing even a 
 small number of unconstrained bounded events leads to a massive blowup in the 
@@ -531,4 +509,81 @@ asynchronously superposing unconstrained bounded events.
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \bibliographystyle{chicago}{}
 \bibliography{draft1}
+
+\appendix
+\section{Map-Reduce}
+The Map-Reduce model is designed to process very large data sets efficiently, 
+taking advantage of parallel processing methods and distributed computing. It 
+uses a repeated multi-step algorithm which divides the data into chunks, 
+converts these chunks into a number of key/value pairs using a \textit{Mapper} 
+function, then distributes these pairs over a number of \textit{Reducers}. The 
+Reducer will be called once for each unique key created by the Mapper, and will 
+iterate through the values associated with it to produce zero or more outputs.
+
+For example, a word-counting program may break a document into lines, each of 
+which will be the input to a Mapper. The Mapper will break the line into words 
+and output a key/value pair for each unique word, with the word itself as the 
+key, and the number of its occurrences in the line as the value. The Reducer 
+takes all the key/value pairs from all lines which have the same key and sums 
+the values to output a total count of that word for the document.
+
+In our asynchronous superposition of unconstrained bounded events, as we saw, a 
+large amount of data is created in the form of the event-string outputs. This 
+seems like a potential target for applying the Map-Reduce model.%, though the 
+%fact that this paradigm should have a stateless mapper and reducer makes 
+%things 
+%a little difficult.
+
+In theory, our Mapper might take as input the event-strings to be 
+superposed and would return as key pairs of the strings, and as value the set 
+of strings resulting from the superposition of the key-pair:
+\begin{align*}
+map(s_1 ~\&_{\bc}~ s_2 ~\&_{\bc}~ \cdots ~\&_{\bc}~ s_{n-1} ~\&_{\bc}~ s_n) = 
+\{(s_1s_2, s_1 ~\&_{\bc}~ s_2), \cdots, (s_{n-1}s_n, s_{n-1} ~\&_{\bc}~ s_n)\}
+\end{align*}
+However, in this case, the Reducer has nothing to do, as each key is unique, 
+and therefore pairs with matching keys cannot be collected and reduced to a 
+single value. Similarly, if the key was chosen as just one of the string pair, 
+rather than both.
+
+Perhaps instead we take a particular string (\textit{e.g} the first) as a key, 
+and then superposition of it with each other string as the values:
+\begin{align*}
+map(s_1 ~\&_{\bc}~ s_2 ~\&_{\bc}~ \cdots ~\&_{\bc}~ s_{n-1} ~\&_{\bc}~ s_n) = 
+\{(s_1, s_1 ~\&_{\bc}~ s_2), \cdots, (s_1, s_1 ~\&_{\bc}~ s_n)\}
+\end{align*}
+We can use the Reducer now, but there's not a whole lot that the function can 
+do, except collect the values. If it were to do that, it must be done in such a 
+way that the result of each superposition from the previous step were kept 
+separate, so we would have a collection of $n$ separate sets of generated 
+strings, in order to prevent superposing two strings from the same earlier 
+generation (which should be considered as parallel worlds). While this could 
+potentially fulfill the goals of Map-Reduce, a large amount of redundant 
+superposition has been performed, each time increasing the maximum length of 
+the generated strings, making the computation less efficient at each 
+stage.
+
+As a third alternative, suppose the Mapper just used a generic key each time, 
+and returned the result of the padding function.
+\begin{align*}
+map(s_1 ~\&_{\bc}~ s_2 ~\&_{\bc}~ \cdots ~\&_{\bc}~ s_{n-1} ~\&_{\bc}~ s_n) = 
+\{(s_{key}, pad_k(s_1)), \cdots, (s_{key}, pad_k(s_n))\}
+\end{align*}
+where $s_{key}$ is a generic key, and $k = \mbox{length}(s_1) + \cdots + 
+\mbox{length}(s_n) - (n - 1)$. In this scenario, the Reducer will be able to 
+perform a simple, synchonous superposition on all the pairings of the values -- 
+however, at just $n=5$, $k$ becomes $11$, and for a simple 
+bounded event \fbox{\vph{$e'$}}\fbox{$e\vph{e'}$}\fbox{\vph{$e'$}} there are 
+$66$ different strings returned by $pad_{11}$, meaning there may be $66^5$ 
+different superposition operations to perform, which is over a billion.
+
+Due to the fact that the Mapper and Reducer should both be pure, stateless 
+functions, we are unfortunately quite limited in what applications it has in 
+the context of asynchronous superposition. The best case would be to use a 
+generic key for the Mapper, as in the last example above, but to have the 
+values be superposed pairs of strings as in the first example. Then the Reducer 
+could combine the generated strings in order to create new data and repeat the 
+process. However, using a generic key in the manner described somewhat defeats 
+the purpose of using the Mapper at all, and thus is not a good implementation 
+of the Map-Reduce model either.
 \end{document}
