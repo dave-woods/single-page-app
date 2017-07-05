@@ -40,6 +40,25 @@ html
         display: block;
         margin: 1em;
       }
+      sub {
+        font-size: x-small;
+      }
+      code {
+        font-family: monospace;
+      }
+      .event-string {
+        font-size: 0.9em;
+        margin: 0 1em;
+        font-family: monospace;
+      }
+      .bordered {
+        height: 1.6rem;
+        display: inline-flex;
+        justify-content: center;
+        align-items: center;
+        border: 1px solid black;
+        padding: 0 0.2rem;
+      }
   body
     .wrap--body
       h2= title
@@ -50,3 +69,16 @@ html
         input(type="submit" value="Submit")
       a(href="/tml/data/1") Example file 1
       a(href="/tml/data/2") Example file 2
+      .notation
+          p The notation representing event-strings on these webpages uses the pipe character (|) to denote the boundaries between string positions. Thus for the string <em>s = &alpha;<sub>1</sub> ... &alpha;<sub>n</sub></em>, every contiguous pair of symbols <em>&alpha;<sub>i</sub></em> and <em>&alpha;<sub>i+1</sub></em> will be separated by a pipe.
+          p As fluents drawn from the TimeML files are rarely (if ever) represented by a single character, we wrap the multicharacter names in backticks for clarity.
+          p For example, the event-string generated from the fluents <em>e</em> and <em>e1</em>, with the Allen relation "<em>e BEFORE e1</em>":
+            span.event-string.event-string--boxed
+              span.bordered &nbsp;
+              span.bordered e
+              span.bordered &nbsp;
+              span.bordered e1
+              span.bordered &nbsp;
+            | &equiv;
+            span.event-string.event-string--piped
+              ||e||`e1`|

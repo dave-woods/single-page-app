@@ -19,21 +19,28 @@ html
       form(action="/tml"  method="GET")
         input(type="submit" value="Upload new file")
       if data
-        .tlinks(style="max-width:1000px;")
+        .tlinks(style="max-width:90vw;")
           h3= `Number of TLinks: ${data.length}`
-          .wrap--list(style="display:flex;flex-direction:row;justify-content:space-around;")
+            span.metrics(title="Click to show/hide some basic metrics" style="float:right; cursor:pointer;text-decoration:underline;") Metrics
+          .wrap--list(style="display:flex;flex-flow:row nowrap;justify-content:space-around;")
             .strs(style="height:200px;overflow-y:auto;width:300px;background-color:#fff;padding:2em;")
-              h4 Strings
-              pre= JSON.stringify(data.strs, null, 2)
-            .stats(style="height:200px;overflow-y:auto;width:300px;background-color:#fff;padding:2em;")
-              h4 Statistics
-              pre= JSON.stringify(data.stats, null, 2)
+              h4 Allen Strings
+              pre= JSON.stringify(data.strs.reduce((acc, cur, i) => {acc[i] = cur; return acc}, {}), null, 2).replace(/\"/g, "")
+            .estrs(style="height:200px;overflow-y:auto;width:300px;background-color:#fff;padding:2em;")
+              h4 Event-Strings
+              pre= JSON.stringify(data.estrs.reduce((acc, cur, i) => {acc[i] = cur; return acc}, {}), null, 2).replace(/\"/g, "")
+            .stats.hidden(style="height:200px;overflow-y:auto;width:300px;background-color:#fff;padding:2em;")
+              h4 Basic Metrics
+              pre= JSON.stringify(data.stats, null, 2).replace(/\"/g, "'")
         h3.text-xml(title="Click to toggle between text and original XML" style="cursor:pointer;text-decoration:underline;") Text / XML
-        .file-contents(style="max-width:1000px;background-color:white;margin:1em;padding:2em;height:600px;overflow-y:auto;")
+        .file-contents(style="max-width:90vw;background-color:white;margin:1em;padding:2em;height:600px;overflow-y:auto;")
           pre.file-text(style="white-space:pre-wrap;")= data.text
           pre.file-xml.hidden(style="white-space:pre-wrap;")= data.xml
         script.
           document.querySelector('.text-xml').addEventListener('click', (e) => {
             document.querySelector('.file-text').classList.toggle('hidden')
             document.querySelector('.file-xml').classList.toggle('hidden')
+          })
+          document.querySelector('.metrics').addEventListener('click', (e) => {
+            document.querySelector('.stats').classList.toggle('hidden')
           })

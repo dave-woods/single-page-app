@@ -25,7 +25,9 @@ exports.handleTML = (fileloc) => async (req, res) => {
         }
         return acc
       }, {})
-      reduced.str = '' + (reduced.eventInstanceID || reduced.timeID) + ' ' + fetchRel[reduced.relType] + ' ' + (reduced.relatedToEventInstance || reduced.relatedToTime)
+      const strings = fetchRel((reduced.eventInstanceID || reduced.timeID), (reduced.relatedToEventInstance || reduced.relatedToTime), reduced.relType)
+      reduced.str = strings.allenString
+      reduced.estr = strings.eventString
       return reduced
     })
     const stats = mapped.reduce((acc, tl) => {
@@ -58,11 +60,11 @@ exports.handleTML = (fileloc) => async (req, res) => {
       }
       return acc
     }, {timeIDs: {}, eventInstanceIDs: {}})
-    const strs = mapped.map(tl => tl.str)
     res.json({
-      length: strs.length,
+      length: mapped.length,
       tlinks: mapped,
-      strs,
+      strs: mapped.map(tl => tl.str),
+      estrs: mapped.map(tl => tl.estr),
       stats,
       xml: data,
       text: xml.documentElement.textContent.trim()
@@ -70,19 +72,69 @@ exports.handleTML = (fileloc) => async (req, res) => {
   })
 }
 
-const fetchRel = {
-  'BEFORE': '<',
-  'AFTER': '>',
-  'INCLUDES': 'di',
-  'IS_INCLUDED': 'd',
-  'DURING': 'd',
-  'DURING_INV': 'di',
-  'SIMULTANEOUS': '=',
-  'IAFTER': 'mi',
-  'IBEFORE': 'm',
-  'IDENTITY': '=',
-  'BEGINS': 's',
-  'ENDS': 'f',
-  'BEGUN_BY': 'si',
-  'ENDED_BY': 'fi'
+const fetchRel = (e1, e2, rel) => {
+  switch (rel) {
+    case 'BEFORE':
+      return {
+        allenString: e1 + ' < ' + e2,
+        eventString: '|`' + e1 + '`||`' + e2 + '`|'
+      }
+    case 'AFTER':
+      return {
+        allenString: e1 + ' > ' + e2,
+        eventString: '|`' + e2 + '`||`' + e1 + '`|'
+      }
+    case 'INCLUDES':
+    case 'DURING_INV':
+      return {
+        allenString: e1 + ' di ' + e2,
+        eventString: '|`' + e1 + '`|`' + e1 + '``' + e2 + '`|`' + e1 + '`|'
+      }
+    case 'IS_INCLUDED':
+    case 'DURING':
+      return {
+        allenString: e1 + ' d ' + e2,
+        eventString: '|`' + e2 + '`|`' + e1 + '``' + e2 + '`|`' + e2 + '`|'
+      }
+    case 'SIMULTANEOUS':
+    case 'IDENTITY':
+      return {
+        allenString: e1 + ' = ' + e2,
+        eventString: '|`' + e1 + '``' + e2 + '`|'
+      }
+    case 'IAFTER':
+      return {
+        allenString: e1 + ' mi ' + e2,
+        eventString: '|`' + e2 + '`|`' + e1 + '`|'
+      }
+    case 'IBEFORE':
+      return {
+        allenString: e1 + ' m ' + e2,
+        eventString: '|`' + e1 + '`|`' + e2 + '`|'
+      }
+    case 'BEGINS':
+      return {
+        allenString: e1 + ' s ' + e2,
+        eventString: '|`' + e1 + '``' + e2 + '`|`' + e2 + '`|'
+      }
+    case 'ENDS':
+      return {
+        allenString: e1 + ' f ' + e2,
+        eventString: '|`' + e2 + '`|`' + e1 + '``' + e2 + '`|'
+      }
+    case 'BEGUN_BY':
+      return {
+        allenString: e1 + ' si ' + e2,
+        eventString: '|`' + e1 + '``' + e2 + '`|`' + e1 + '`|'
+      }
+    case 'ENDED_BY':
+      return {
+        allenString: e1 + ' fi ' + e2,
+        eventString: '|`' + e1 + '`|`' + e1 + '``' + e2 + '`|'
+      }
+    default:
+      return {
+        error: 'Unknown relation'
+      }
+  }
 }
