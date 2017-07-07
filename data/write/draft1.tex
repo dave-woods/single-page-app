@@ -1,0 +1,589 @@
+\documentclass[a4paper,11pt]{article}
+
+\usepackage{graphicx}  %%% for including graphics
+\usepackage{url}       %%% for including URLs
+\usepackage{times}
+\usepackage{amssymb,amsmath,amscd}
+\usepackage{natbib}
+\usepackage[margin=25mm]{geometry}
+
+% Tim's custom commands
+\newcommand{\bc}{{\rm b\!c}}
+\newcommand{\unpad}{\mbox{{\rm unpad}}}
+\newcommand{\vph}[1]{\vphantom{#1}}
+\newcommand{\sta}[2]{\stackrel{#1}{#2}}
+\newcommand{\sk}{{\sf k}}
+\newcommand{\sv}{{\sf v}}
+\newcommand{\rr}{{\rm r}}
+
+\title{Preliminary Title}
+\date{}
+
+\author{Example Author\\
+	Affiliation\\
+	\texttt{example@email.org}
+	\and Someone Else\\
+	Another Affiliation\\
+	\texttt{another@email.org}
+}
+
+\begin{document}
+\maketitle
+\thispagestyle{empty}
+\pagestyle{empty}
+
+%\section{Structure}
+%
+%\begin{itemize}
+%	\item Why strings are useful $\to$ bring information together
+%	\item Can't presuppose translation of Allen Relations to strings
+%	\item Block compression
+%	\item Superposition
+%	\item Exploring usefulness of having longer strings for greater than 2 
+%	events
+%	\item How feasible is this representation
+%	\item Trying to find the sweet spot before the combinatorial explosion
+%	\item Bounded superposition approach at string level
+%	\item Using a finite state automaton (looking at all strings at once)
+%	\item Hybrid approach
+%	\item Added constraints before superposition
+%\end{itemize}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%                                                                              %
+%                            Actual Document Begins                            %
+%                                                                              %
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\section{Introduction}
+This paper explores using string-based models to effectively represent event 
+data such as might be found in a document annotated with TimeML. It is 
+described how such data may be simply translated to strings, as well as 
+operations on the these resultant strings which may be used to infer new 
+information.
+
+It is put forward that strings pose a strong candidate as a basis for modelling 
+this information over other approaches such as models rooted in predicate 
+logic. Due to a string's nature as a computational entity, it is both simple 
+and intuitive to understand as a human, and efficiently tractable for a 
+machine. Strings also permit operations on an individual level, which may be 
+impossible for models which generate all formulae at once.
+
+An \textit{event-string} is a string $s \in \Sigma^+$ for an alphabet 
+$\Sigma$, the powerset of some fixed set $\digamma$ of fluents \textit{i.e.} 
+predicates which have an associated temporality. If the 
+string $s = \alpha_1\cdots\alpha_n$ is taken as a sequence of $n$ moments in 
+time, each symbol $\alpha_i \in s$ represents the set of relevant fluents 
+holding at the 
+moment indexed by $i$. The string is read from left to right chronologically, 
+so that any predicates which hold at the moment at index $i$ are understood to 
+have held before the moment indexed by $j$ if and only if $i < j$.
+
+The precise duration of each moment is taken as unimportant in the current 
+discussion, 
+and thus the strings model an inertial world, whereby \textit{change} is the 
+only mark of progression from one moment to the next -- ``there is no time 
+without change" (Aristotle).
+
+Thus, if $\alpha_i = \alpha_{i+1}$ for any 
+$1 \leq i < n$, then either symbol may be safely deleted from $s$ without 
+affecting the interpretation of the string, as the remaining symbol is simply 
+taken as representing a longer moment. This operation of removing 
+repetition from 
+the event-string is known as \textit{block compression} 
+\citep{fernando2016prior}. We may also describe 
+the inverse of this process, which introduces repeated elements in an 
+event-string without changing its interpretation, allowing us greater 
+flexibility in our manipulation of the string. These operations are detailed 
+in the next section.
+
+\section{Superposition and Block Compression}
+With two strings $s$ and $s'$ of the same length $n$
+built from an alphabet $\Sigma$, the powerset of some fixed set 
+$\digamma$,
+the \textit{superposition} $s ~\&~ s'$ of $s$ and $s'$ is their componentwise 
+union:
+\begin{align*}
+\alpha_1\cdots\alpha_n \ \&\ 
+\alpha'_1\cdots\alpha_n' & \ :=\
+(\alpha_1\cup\alpha'_1)\cdots(\alpha_n\cup\alpha'_n)
+\end{align*}
+For convenience of notation, we will use boxes rather than curly braces 
+$\{$~$\}$ to represent sets in $\Sigma$, such that each symbol $\alpha$ in a 
+string $s$ corresponds to exactly one box. For example, with $a, b, c, d \in A$:
+\begin{align*}
+\fbox{$a\vph{,'}$}\fbox{$c\vph{,'}$} \ \& \ 
+\fbox{$b\vph{,'}$}\fbox{$d\vph{,'}$} \ = \
+\fbox{$a, b\vph{,'}$}\fbox{$c, d\vph{,'}$} \ \in\ \Sigma^2
+\end{align*}
+Extending this function to languages $L$ and $L'$ over the same alphabet is a 
+simple matter of 
+collecting the superpositions of strings from each language of equal length: 
+\begin{align*}
+L ~\&~ L' & \ :=\ \bigcup_{n\geq 0}
+\{s~\&~s'\ | \ s\in L\cap \Sigma^n\mbox{ and }s'\in L'\cap \Sigma^n\}
+\end{align*}
+For example, $L ~\&~ \fbox{\vph{'}}^\ast = L$.
+If $L$ and $L'$ are regular languages computed by finite automata
+with transitions $\to$ and $\to'$, then the superposition $L~\&~ L'$ is
+a regular language computed by a finite automaton with transitions
+$\Rightarrow$
+formed by running $\to$ and $\to'$ in lockstep
+according to the rule 
+\begin{align*}
+\frac{q \sta{\alpha}{\to} r   \hspace{.4in} q' \sta{\alpha'}{\to'} r'}{
+	(q,q') \sta{\alpha\cup\alpha'}{\Rightarrow} (r,r')}
+\end{align*}
+A disadvantage of this operation is that it requires the string operands to be 
+of equal length, which is an overly specific case. In order to generalise this 
+procedure to strings of arbitrary lengths, we may 
+manipulate the strings to introduce asynchrony. For example, we 
+can cause a string $s=\alpha_1\cdots\alpha_n$ to \textit{stutter} such that 
+$\alpha_i=\alpha_i+1$ for some integer $0 < i < n$. For example, 
+\fbox{$a\vph{'}$}\fbox{$a\vph{'}$}\fbox{$a\vph{'}$}\fbox{$c\vph{'}$}\fbox{$c\vph{'}$}
+ is a stuttering version of 
+\fbox{$a\vph{'}$}\fbox{$c\vph{'}$}. If 
+a string does not 
+stutter, it is \textit{stutterless}, and we can transform a stuttering string 
+to this 
+state by using ``block compression":
+\begin{align*}
+\bc(s)  &\ \ :=\ \
+\left\{ \begin{array}{ll}
+s & \mbox{ if }~length(s)\leq 1 \\
+\bc({\alpha}s')  & \mbox{ if } s={\alpha}{\alpha}s'\\
+\alpha ~{\bc}({\alpha'}{s'})  
+& \mbox{ if } s=\alpha{\alpha'}{s'} \mbox{ with } \alpha\neq\alpha'
+\end{array}
+\right. 
+\end{align*}
+This function can be applied multiple times to a string, but the output will 
+not change after the first application: $\bc(\bc(s)) = \bc(s)$. We can also use 
+the inverse of this function to generate infinitely many stuttering strings:
+\begin{align*}
+\bc^{-1}(\fbox{$a\vph{,'}$}\fbox{$c\vph{,'}$}) & = 
+\fbox{$a\vph{,'}$}\fbox{$a\vph{,'}$}\fbox{$c\vph{,'}$} \\
+& = \fbox{$a\vph{,'}$}\fbox{$c\vph{,'}$}\fbox{$c\vph{,'}$} \\
+& = \fbox{$a\vph{,'}$}\fbox{$a\vph{,'}$}\fbox{$c\vph{,'}$}\fbox{$c\vph{,'}$} \\
+& \hspace{3em} \vdots
+\end{align*}
+We can say that any of the strings generated by this inverse block compression 
+are \textit{$\bc{}$-equivalent}. Precisely, a string $s'$ is $\bc{}$-equivalent 
+to a 
+string 
+$s$ iff $s' \in \bc^{-1}\bc(s)$.
+
+We can now define the \textit{asynchronous superposition} of strings $s$ and 
+$s'$ as the (provably) \textit{finite} set obtained by block compressing the 
+\textit{infinite} 
+language generated by superposing the strings which are $\bc$-equivalent to $s$ 
+and $s'$:
+\begin{align*}
+s\ \&_{\bc} \ s' & \ := \
+\{\bc(s'') \ | \ s''\in \bc^{-1}\bc(s)\ \& \ \bc^{-1}\bc(s')\}
+\end{align*}
+For example \fbox{$a\vph{,'}$}\fbox{$c\vph{,'}$} $\&_{\bc}$ 
+\fbox{$b\vph{,'}$}\fbox{$d\vph{,'}$} will comprise 
+three strings:
+\begin{align*}
+\fbox{$a, b\vph{,'}$}\fbox{$c, d\vph{,'}$}\\
+\fbox{$a, b\vph{,'}$}\fbox{$a, d\vph{,'}$}\fbox{$c, d\vph{,'}$}\\
+\fbox{$a, b\vph{,'}$}\fbox{$b, c\vph{,'}$}\fbox{$c, d\vph{,'}$}\\
+\end{align*}
+In order to avoid generating all possible strings when using the inverse block 
+compression, we introduce an upper bound to the length of the strings which 
+will be superposed. It can be shown that with two strings of length $n$ and 
+$n'$, the longest $\bc$-unique string (one which has no shorter 
+$\bc$-equivalent strings) produced through asynchronous superposition will be 
+of length $n+n'-1$.
+
+\section{Upper Bound on Asynchronous Superposition}
+\paragraph{Proposition 1.} {\sl For all  $s, s' \in \Sigma^+$
+and all $s''\in s\ \hat{\&}\ s'$,}
+\begin{align*}
+\mbox{length}(s'')\ \leq\ \mbox{length}(s) + \mbox{length}(s') -1
+\end{align*}
+\noindent
+For all $s,s'\in \Sigma^{\ast}$, we define a finite set
+$s~\hat{\&}~s'$ of strings over $\Sigma$ with enough of 
+the strings in $\bc^{-1}\bc(s)~\&~\bc^{-1}\bc(s')$
+to form $s~\&_{\bc}~s'$.
+The definition proceeds by induction on $s$ and $s'$, with
+\begin{align*}
+\epsilon\ \hat{\&}\ \epsilon \ :=& \ \{\epsilon\}\\
+\epsilon\ \hat{\&}\ s \ :=& \ \emptyset\ \ \mbox{ for } s\neq\epsilon\\
+s\ \hat{\&}\ \epsilon \ :=& \ \emptyset\ \ \mbox{ for } s\neq\epsilon
+\end{align*}
+and for all $\alpha,\alpha'\in \Sigma$,
+\begin{align*}
+\alpha s~\hat{\&}~\alpha's' \ :=& \ 
+(\alpha\cup \alpha')(\alpha s\ \hat{\&}\ s'
+\ | \ s~\hat{\&}~\alpha's' \ | \  s~\hat{\&}~s')\\
+=&~\{(\alpha\cup\alpha')s''\ | \ s''\in (\alpha s~\hat{\&}~s') \cup 
+(s~\hat{\&}~\alpha's') \cup (s~\hat{\&}~s')\}
+\end{align*}
+Note that a string in $s\ \hat{\&}\ s'$ might stutter, even if neither of the 
+operands $s$ or $s'$ do
+(\textit{e.g.} $\fbox{$a,c\vph{,'}$}\fbox{$a,c\vph{,'}$}\in
+\fbox{$a\vph{,'}$}\fbox{$c\vph{,'}$}\ \hat{\&}\ 
+\fbox{$c\vph{,'}$}\fbox{$a\vph{,'}$}$)
+-- however, it can be made stutterless through block compression.
+
+\paragraph{Proposition 2.} {\sl For all $s,s'\in \Sigma^+$,}
+\begin{align*}
+s\ \hat{\&}\ s' & \ \subset\ \bc^{-1}\bc(s)\ \&\ \bc^{-1}\bc(s')
+\end{align*}
+and
+\begin{align*}
+\{\bc(s'')\ | \ s''\in s\ \hat{\&}\ s'\}
+& \ = \   s\ \&_{\bc}\ s'
+\end{align*}
+Now, for any integer $k > 0$ and string $s = \alpha_1\cdots\alpha_n$ over 
+$\Sigma$, we introduce a new 
+function 
+$pad_k$ which will generate the set of strings with length $k$ which are 
+$\bc$-equivalent to $s$:
+\begin{align*}
+pad_k(\alpha_1\cdots\alpha_n)~:=&~~\alpha_1^+\cdots\alpha_n^+\ \cap\ \Sigma^k \\
+=&~~\{
+\alpha_1^{k_1}\cdots\alpha_n^{k_n}\ | \
+k_1,\ldots,k_n\geq 1
+\mbox{ and } \sum_{i=1}^n k_i = k \}\\
+\subset&~~\bc^{-1}\bc(\alpha_1\cdots\alpha_n)
+\end{align*}
+For example, $pad_{4}(\fbox{$a\vph{'}$}\fbox{$c\vph{'}$})$ will 
+generate \{
+\fbox{$a\vph{'}$}\fbox{$a\vph{'}$}\fbox{$a\vph{'}$}\fbox{$c\vph{'}$}, 
+\fbox{$a\vph{'}$}\fbox{$a\vph{'}$}\fbox{$c\vph{'}$}\fbox{$c\vph{'}$}, 
+\fbox{$a\vph{'}$}\fbox{$c\vph{'}$}\fbox{$c\vph{'}$}\fbox{$c\vph{'}$} \}. We 
+can use this new function in our 
+calculation of asynchronous superposition, to limit the generation of strings 
+from the inverse block compression step. Since we know from Proposition 1 that 
+the maximum possible 
+length we might need is $n+n'-1$, we can use this value in the $pad$ function 
+to just 
+generate the strings of that length, giving us a new definition of asynchronous 
+superposition:
+\paragraph{Corollary 3.} {\sl For any $s,s'\in \Sigma^+$
+	with nonzero lengths $n$ and $n'$ respectively,}
+\begin{align*}
+s \ \&_{\bc} \ s' & \ = \
+\{\bc(s'')\ | \ s''\in pad_{n+n'-1}(s)\ \& \ pad_{n+n'-1}(s')\}
+\end{align*}
+Neither $s\ \hat{\&}\ s'$ nor $pad_{n+n'-1}(s)\ \& \ pad_{n+n'-1}(s')$
+need be a subset of the other, even though,
+under the assumptions of Corollary 3, 
+both sets block compress to $s \ \&_{\bc} \ s'$.
+
+\section{Event Representation}\label{secER}
+Now we may use asynchronous superposition to generate the 13 strings in 
+\fbox{\vph{$e'$}}\fbox{$e\vph{e'}$}\fbox{\vph{$e'$}} 
+$\&_{\bc}$ 
+\fbox{\vph{$e'$}}\fbox{$e'$}\fbox{\vph{$e'$}}, each of which corresponds to one 
+of the unique interval relations in \cite{allen1983maintaining}.
+We use the empty box \fbox{$\vph{'}$} as a string of length 1 (not to confused 
+with the empty string $\epsilon$, which is length 0) to bound events, allowing 
+us to represent the fact that they are finite -- they have a beginning and 
+ending point. It is prudent to assume that we will deal only with finite event 
+data, such that there are no fluents which do not have both an associated 
+start-point and end-point. If such a fluent were to occur, it would be trivial 
+to add it to every position in the string. 
+
+The bounding boxes represent the time 
+before and after the event occurs, during which no other fluents belonging to 
+the alphabet $\Sigma$ 
+hold. The 
+Allen Relation Strings are laid out 
+below:
+\begin{center}
+	\begin{tabular}{ l@{\hskip 1in}c@{\hskip 1in}r }
+		$e~\mathbf{=}~e'$ & \fbox{\vph{$e'\vph{,e'}$}}\fbox{$e, 	
+		e'\vph{e'}$}\fbox{\vph{$,e'$}} & equal\\[0.6em]		
+		$e~\mathbf{s}~e'$ & \fbox{\vph{$e'\vph{,e'}$}}\fbox{$e, 
+		e'\vph{e'}$}\fbox{$e'\vph{,e'}$}\fbox{\vph{$,e'$}} & starts\\[0.6em]
+		$e~\mathbf{si}~e'$ & \fbox{\vph{$e'\vph{,e'}$}}\fbox{$e, 		
+		e'\vph{e'}$}\fbox{$e\vph{,e'}$}\fbox{\vph{$,e'$}} & 		
+		starts~(inverse)\\[0.6em]
+		$e~\mathbf{f}~e'$ & \fbox{\vph{$e'\vph{,e'}$}}\fbox{$ 		
+		e'\vph{,e'}$}\fbox{$e, e'\vph{,e'}$}\fbox{\vph{$,e'$}} & 		
+		finishes\\[0.6em]
+		$e~\mathbf{fi}~e'$ & \fbox{\vph{$e'\vph{,e'}$}}\fbox{$ 		
+		e\vph{,e'}$}\fbox{$e, e'\vph{,e'}$}\fbox{\vph{$,e'$}} &		
+		finishes~(inverse)\\[0.6em]
+		$e~\mathbf{d}~e'$ & \fbox{\vph{$,e'$}}\fbox{$ e'\vph{,e'}$}\fbox{$e, 
+		e'\vph{,e'}$}\fbox{$ e'\vph{,e'}$}\fbox{\vph{$,e'$}} & during\\[0.6em]
+		$e~\mathbf{di}~e'$ & \fbox{\vph{$e'\vph{,e'}$}}\fbox{$ 
+		e\vph{,e'}$}\fbox{$e, e'\vph{,e'}$}\fbox{$ 
+		e\vph{,e'}$}\fbox{\vph{$,e'$}} & during~(inverse)\\[0.6em]
+		$e~\mathbf{o}~e'$ & \fbox{\vph{$,e'$}}\fbox{$ e\vph{,e'}$}\fbox{$e, 
+		e'\vph{,e'}$}\fbox{$ e'\vph{,e'}$}\fbox{\vph{$,e'$}} & 
+		overlaps\\[0.6em]
+		$e~\mathbf{oi}~e'$ & \fbox{\vph{$e'\vph{,e'}$}}\fbox{$ 
+		e'\vph{,e'}$}\fbox{$e, e'\vph{,e'}$}\fbox{$ 
+		e\vph{,e'}$}\fbox{\vph{$,e'$}} & overlaps~(inverse)\\[0.6em]
+		$e~\mathbf{m}~e'$ & \fbox{\vph{$,e'$}}\fbox{$ e\vph{,e'}$}\fbox{$ 
+		e'\vph{,e'}$}\fbox{\vph{$,e'$}} & meets\\[0.6em]
+		$e~\mathbf{mi}~e'$ & \fbox{\vph{$e'\vph{,e'}$}}\fbox{$ 
+		e'\vph{,e'}$}\fbox{$ e\vph{,e'}$}\fbox{\vph{$,e'$}} & 
+		meets~(inverse)\\[0.6em]
+		$e~\mathbf{<}~e'$ & \fbox{\vph{$,e'$}}\fbox{$ 
+		e\vph{,e'}$}\fbox{$\vph{,e'}$}\fbox{$ e'\vph{,e'}$}\fbox{\vph{$,e'$}} & 
+		before\\[0.6em]
+		$e~\mathbf{>}~e'$ & \fbox{\vph{$e'\vph{,e'}$}}\fbox{$ 
+		e'\vph{,e'}$}\fbox{$\vph{,e'}$}\fbox{$ e\vph{,e'}$}\fbox{\vph{$,e'$}} & 
+		after
+	\end{tabular}
+\end{center}
+These Allen Relations are included in the attributes of ISO-TimeML 
+\citep{pustejovsky2010iso}, the standard 
+markup language used for event annotation in texts, as TLINKs. By extracting 
+the TLINKs from an annotated document, and translating them to our event-string 
+representation, we may begin to reason about the relationships between 
+annotated events which do not have an associated TLINK in the markup. For 
+example, the document may give us a relation between events $e$ and $e'$, and 
+another relation between $e'$ and $e''$, and from this we may infer the 
+possible 
+relations between $e$ and $e''$.
+
+As asynchronous superposition is a commutative, associative, homomorphic binary 
+relation over event-strings, we may superpose 
+arbitrary numbers of event-strings: $s ~\&_{\bc}~ s' ~\&_{\bc}~ s'' ~\&_{\bc}~ 
+\cdots$. Note, however, that superposing even a 
+small number of unconstrained bounded events leads to a massive blowup in the 
+number of possible outcomes. Currently, attempting to compute the result of 
+more than five is beyond the capabilities of available hardware:
+\begin{align*}
+2 ~\mbox{bounded events} &\to 13 ~\mbox{outcomes}\\
+3 ~\mbox{bounded events} &\to 409 ~\mbox{outcomes}\\
+4 ~\mbox{bounded events} &\to 23917 ~\mbox{outcomes}\\
+5 ~\mbox{bounded events} &\to 2244361 ~\mbox{outcomes}
+\end{align*}
+Clearly, simply superposing bounded events in this manner is not feasible, as 
+it 
+is unreasonable to expect that any given document would contain five or less 
+events. In order to avoid generating such a large number of computed 
+event-strings, it is necessary to add constraints where appropriate as to what 
+strings may be considered allowable for a particular context.
+
+\section{Constraints on Event-Strings}\label{constraints}
+Two approaches to constraints may be implemented, which are not mutually 
+exclusive. The first is to prevent unwanted strings from being generated, based 
+on the nature of the operand strings, and the second is to remove disallowed 
+strings from the set of outputs. The former approach is preferred from a 
+computational standpoint, as there is less data to store and process.
+
+We assume that every fluent we encounter has exactly one beginning and one 
+ending -- that is, that events do not \textit{resume} once they have ended. 
+Events of the same type may stop and start frequently, but by assuming that 
+every instance of an event will have a uniquely identifying fluent, we can 
+discard any strings which feature such a resumption.
+
+Additionally, fluents 
+may be referred to multiple times by different TLINKs in an annotated document, 
+and we assume that they will be \textit{consistent} within the context of that 
+document \textit{i.e.} if a relation holds between $e$ and $e'$, and a relation 
+holds between $e'$ and $e''$, then both instances of $e'$ refer to the same 
+fluent, and the two relations will not contradict each other.
+
+These last two points are interesting in particular, as they lead to a specific 
+kind of superposition between strings $s, s' \in \Sigma^+$ when some 
+symbol $\alpha \in s$ is equal to some other symbol $\alpha' \in s'$. In this 
+scenario, the symbols must unify when superposing the strings, in order to 
+create a well-formed event-string in accordance with the above two constraints. 
+To achieve this, when a symbol $\alpha$ in $s$ is also present in $s'$, and the 
+asynchronous superposition of these strings is desired, padding is carried out 
+as normal, but superposition is only permitted of those results of padding 
+in which the indices of the matching symbols are equal:
+\begin{align*}
+\alpha_1\cdots\alpha_n \ \&\ 
+\alpha'_1\cdots\alpha_n' & \ :=\
+\{(\alpha_1\cup\alpha'_1)\cdots(\alpha_n\cup\alpha'_n) ~|~ \alpha_i = \alpha'_j 
+\Rightarrow i = j\}
+\end{align*}
+
+Finally, we may also introduce simple binary constraints if external 
+information is 
+available (\textit{e.g.} ``the string may not begin with $e$"), and these might 
+be 
+simply intersected with the result of a superposition: $(s\ \&_{\bc} \ s') \cap 
+C$, where $C$ represents the constraints to be applied.
+
+\section{Grounding}
+The TIMEBANK Corpus \citep{pustejovsky2003timebank} provides a large number of 
+documents annotated with TimeML, from which we may extract the event data -- in 
+particular the TLINKs. As mentioned in Section \ref{secER}, attempting to 
+generate the possible worlds from just the bounded event instances alone is not 
+possible, as there are just too many. Instead, we begin by looking at just 
+those events which are linked to another by Allen Relation.
+
+We translate these relations immediately to their corresponding event-strings, 
+and superpose these according to the constraints mentioned in Section 
+\ref{constraints}. In this way, we may generate a much smaller set of possible 
+outcomes from a larger number of bounded events.
+
+A drawback here is that for this to be effective, it relies on the events being 
+heavily constrained by their interrelations. If there are too few TLINKs 
+relative to the number of events, we still run into the problem of 
+combinatorial explosion. An additional issue in computation of the 
+superposition of events arises from unordered data leading to a much less 
+efficient calculation of final results. For example, 
+\fbox{\vph{$e'$}}\fbox{$a\vph{e'}$}\fbox{\vph{$e'$}}\fbox{$b\vph{e'}$}\fbox{\vph{$e'$}}
+ $\&_{\bc}$ 
+ \fbox{\vph{$e'$}}\fbox{$b\vph{e'}$}\fbox{\vph{$e'$}}\fbox{$c\vph{e'}$}\fbox{\vph{$e'$}}
+ $\&_{\bc}$ 
+ \fbox{\vph{$e'$}}\fbox{$c\vph{e'}$}\fbox{\vph{$e'$}}\fbox{$d\vph{e'}$}\fbox{\vph{$e'$}}
+  and 
+  \fbox{\vph{$e'$}}\fbox{$a\vph{e'}$}\fbox{\vph{$e'$}}\fbox{$b\vph{e'}$}\fbox{\vph{$e'$}}
+  $\&_{\bc}$ 
+  \fbox{\vph{$e'$}}\fbox{$c\vph{e'}$}\fbox{\vph{$e'$}}\fbox{$d\vph{e'}$}\fbox{\vph{$e'$}}
+  $\&_{\bc}$ 
+  \fbox{\vph{$e'$}}\fbox{$b\vph{e'}$}\fbox{\vph{$e'$}}\fbox{$c\vph{e'}$}\fbox{\vph{$e'$}}
+  should produce the same, single output: 
+ \fbox{\vph{$e'$}}\fbox{$a\vph{e'}$}\fbox{\vph{$e'$}}\fbox{$b\vph{e'}$}%
+ \fbox{\vph{$e'$}}\fbox{$c\vph{e'}$}\fbox{\vph{$e'$}}\fbox{$d\vph{e'}$}\fbox{\vph{$e'$}},
+  which they do. However, due to the respective orderings, the first sequence 
+ will arrive at that conclusion much faster as 
+ \fbox{\vph{$e'$}}\fbox{$a\vph{e'}$}\fbox{\vph{$e'$}}\fbox{$b\vph{e'}$}\fbox{\vph{$e'$}}
+ $\&_{\bc}$ 
+ \fbox{\vph{$e'$}}\fbox{$b\vph{e'}$}\fbox{\vph{$e'$}}\fbox{$c\vph{e'}$}\fbox{\vph{$e'$}}
+  has one outcome 
+  (\fbox{\vph{$e'$}}\fbox{$a\vph{e'}$}\fbox{\vph{$e'$}}\fbox{$b\vph{e'}$}\fbox{\vph{$e'$}}\fbox{$c\vph{e'}$}%
+ \fbox{\vph{$e'$}}), which can immediately be asynchronously superposed with 
+ \fbox{\vph{$e'$}}\fbox{$c\vph{e'}$}\fbox{\vph{$e'$}}\fbox{$d\vph{e'}$}\fbox{\vph{$e'$}}
+  to produce the final output. However, 
+  \fbox{\vph{$e'$}}\fbox{$a\vph{e'}$}\fbox{\vph{$e'$}}\fbox{$b\vph{e'}$}\fbox{\vph{$e'$}}
+  $\&_{\bc}$ 
+  \fbox{\vph{$e'$}}\fbox{$c\vph{e'}$}\fbox{\vph{$e'$}}\fbox{$d\vph{e'}$}\fbox{\vph{$e'$}}
+   has 321 output strings, each of which must be individually asynchronously 
+  superposed with 
+  \fbox{\vph{$e'$}}\fbox{$b\vph{e'}$}\fbox{\vph{$e'$}}\fbox{$c\vph{e'}$}\fbox{\vph{$e'$}},
+   only to come to the same conclusion, as only one of these results is 
+  consistent.
+
+One potential way to work around this pitfall is a grouping and ordering stage, 
+where initially only events linked by some relation may be superposed, and only 
+after the operand strings have been sorted to some optimal order. It may be 
+prudent to only perform superposition at all on event strings which may be 
+linked through one or more relations or shared fluents. In this way, new, 
+underspecified events may be formed from the output strings. Consider the 
+scenario with $e_1, \cdots, e_8 \in \digamma$, and the following Allen 
+Relations:
+\begin{align*}
+e_1 <& ~e_4\\
+e_1 ~\mathbf{m}& ~e_2\\
+e_2 ~\mathbf{di}& ~e_3\\
+e_5 ~\mathbf{s}& ~e_7\\
+e_8 >& ~e_5
+\end{align*}
+Note that three obvious clusters of events can be seen: $e_1$, $e_2$, $e_3$, 
+and $e_4$ 
+are interlinked, as are $e_5$, $e_7$, and $e_8$, separately, while $e_6$ is not 
+linked to either group. We might form the underspecified event groups $E_1$ and 
+$E_2$ to refer to these first two clusters, at which point we may freely treat 
+these groups as normal bounded events, and perform asynchronous superposition 
+on their event strings, as well as with that of $e_6$ -- thus reducing the 
+number of inputs from 8 to 3.
+
+Additionally, various weightings might be considered as a method of 
+priority-ordering in the case of a large $\digamma$, such as the number of 
+component events in an underspecified event groups, or the number of relations 
+linking to a particular event.
+\section{Conclusion}
+We have explored in this work the possibility of using strings as basis for 
+modelling event data, motivated by their nature as computational entities. The 
+operation of asynchronous superposition was described for composing strings 
+which represent finite, bounded events, as well as its limits in terms of 
+blowup when the operation is repeated in sequence. The problem is addressed by 
+constraining the strings which may be superposed, with the thirteen unique 
+Allen Relations forming the main part of these, as these can be found in 
+annotated corpora such as TIMEBANK, using the TimeML standard.
+
+Future work on this topic will examine using alternative model-bases to 
+approach the same issue, such as using finite state automata, or a hybrid 
+string/FSA approach, as well as the potential of employing parallel processing 
+methods in order to tackle the combinatorial explosion that occurs in 
+asynchronously superposing unconstrained bounded events.
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%                                                                              %
+%                             Actual Document Ends                             %
+%                                                                              %
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\bibliographystyle{chicago}{}
+\bibliography{draft1}
+
+\appendix
+\section{Map-Reduce}
+The Map-Reduce model is designed to process very large data sets efficiently, 
+taking advantage of parallel processing methods and distributed computing. It 
+uses a repeated multi-step algorithm which divides the data into chunks, 
+converts these chunks into a number of key/value pairs using a \textit{Mapper} 
+function, then distributes these pairs over a number of \textit{Reducers}. The 
+Reducer will be called once for each unique key created by the Mapper, and will 
+iterate through the values associated with it to produce zero or more outputs.
+
+For example, a word-counting program may break a document into lines, each of 
+which will be the input to a Mapper. The Mapper will break the line into words 
+and output a key/value pair for each unique word, with the word itself as the 
+key, and the number of its occurrences in the line as the value. The Reducer 
+takes all the key/value pairs from all lines which have the same key and sums 
+the values to output a total count of that word for the document.
+
+In our asynchronous superposition of unconstrained bounded events, as we saw, a 
+large amount of data is created in the form of the event-string outputs. This 
+seems like a potential target for applying the Map-Reduce model.%, though the 
+%fact that this paradigm should have a stateless mapper and reducer makes 
+%things 
+%a little difficult.
+
+In theory, our Mapper might take as input the event-strings to be 
+superposed and would return as key pairs of the strings, and as value the set 
+of strings resulting from the superposition of the key-pair:
+\begin{align*}
+map(s_1 ~\&_{\bc}~ s_2 ~\&_{\bc}~ \cdots ~\&_{\bc}~ s_{n-1} ~\&_{\bc}~ s_n) = 
+\{(s_1s_2, s_1 ~\&_{\bc}~ s_2), \cdots, (s_{n-1}s_n, s_{n-1} ~\&_{\bc}~ s_n)\}
+\end{align*}
+However, in this case, the Reducer has nothing to do, as each key is unique, 
+and therefore pairs with matching keys cannot be collected and reduced to a 
+single value. Similarly, if the key was chosen as just one of the string pair, 
+rather than both.
+
+Perhaps instead we take a particular string (\textit{e.g} the first) as a key, 
+and then superposition of it with each other string as the values:
+\begin{align*}
+map(s_1 ~\&_{\bc}~ s_2 ~\&_{\bc}~ \cdots ~\&_{\bc}~ s_{n-1} ~\&_{\bc}~ s_n) = 
+\{(s_1, s_1 ~\&_{\bc}~ s_2), \cdots, (s_1, s_1 ~\&_{\bc}~ s_n)\}
+\end{align*}
+We can use the Reducer now, but there's not a whole lot that the function can 
+do, except collect the values. If it were to do that, it must be done in such a 
+way that the result of each superposition from the previous step were kept 
+separate, so we would have a collection of $n$ separate sets of generated 
+strings, in order to prevent superposing two strings from the same earlier 
+generation (which should be considered as parallel worlds). While this could 
+potentially fulfill the goals of Map-Reduce, a large amount of redundant 
+superposition has been performed, each time increasing the maximum length of 
+the generated strings, making the computation less efficient at each 
+stage.
+
+As a third alternative, suppose the Mapper just used a generic key each time, 
+and returned the result of the padding function.
+\begin{align*}
+map(s_1 ~\&_{\bc}~ s_2 ~\&_{\bc}~ \cdots ~\&_{\bc}~ s_{n-1} ~\&_{\bc}~ s_n) = 
+\{(s_{key}, pad_k(s_1)), \cdots, (s_{key}, pad_k(s_n))\}
+\end{align*}
+where $s_{key}$ is a generic key, and $k = \mbox{length}(s_1) + \cdots + 
+\mbox{length}(s_n) - (n - 1)$. In this scenario, the Reducer will be able to 
+perform a simple, synchonous superposition on all the pairings of the values -- 
+however, at just $n=5$, $k$ becomes $11$, and for a simple 
+bounded event \fbox{\vph{$e'$}}\fbox{$e\vph{e'}$}\fbox{\vph{$e'$}} there are 
+$66$ different strings returned by $pad_{11}$, meaning there may be $66^5$ 
+different superposition operations to perform, which is over a billion.
+
+Due to the fact that the Mapper and Reducer should both be pure, stateless 
+functions, we are unfortunately quite limited in what applications it has in 
+the context of asynchronous superposition. The best case would be to use a 
+generic key for the Mapper, as in the last example above, but to have the 
+values be superposed pairs of strings as in the first example. Then the Reducer 
+could combine the generated strings in order to create new data and repeat the 
+process. However, using a generic key in the manner described somewhat defeats 
+the purpose of using the Mapper at all, and thus is not a good implementation 
+of the Map-Reduce model either.
+\end{document}
