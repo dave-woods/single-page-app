@@ -26,8 +26,10 @@ exports.handleTML = (fileloc) => async (req, res) => {
         return acc
       }, {})
       const strings = fetchRel((reduced.eventInstanceID || reduced.timeID), (reduced.relatedToEventInstance || reduced.relatedToTime), reduced.relType)
-      reduced.str = strings.allenString
-      reduced.estr = strings.eventString
+      if (!strings.error) {
+        reduced.str = strings.allenString
+        reduced.estr = strings.eventString
+      }
       return reduced
     })
     const stats = mapped.reduce((acc, tl) => {
