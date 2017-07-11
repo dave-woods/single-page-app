@@ -33,12 +33,16 @@
 	ADAPT Centre\\
 	Trinity College Dublin, Ireland\\
 	\texttt{dwoods@tcd.ie}
-	\and Tim Fernando, Carl Vogel\\
+	\and Tim Fernando\\
+	School of Computer Science and Statistics\\
+	Trinity College Dublin, Ireland\\
+	\texttt{tim.fernando@tcd.ie}
+	\and Carl Vogel\\
 	Computational Linguistics Group \\
 	Trinity Centre for Computing and Language Studies\\
 	School of Computer Science and Statistics\\
 	Trinity College Dublin, Ireland\\
-	\texttt{tim.fernando@tcd.ie}, \texttt{vogel@tcd.ie}
+	\texttt{vogel@tcd.ie}
 }
 
 \begin{document}
@@ -207,13 +211,11 @@ $s~\hat{\&}~s'$ of strings over $\Sigma$ with enough of
 the strings in $\bc^{-1}\bc(s)~\&~\bc^{-1}\bc(s')$
 to form $s~\&_*~s'$.
 The definition proceeds by induction on $s$ and $s'$, with
-\begin{subequations}
 \begin{align}
 \epsilon\ \hat{\&}\ \epsilon \ :=& \ \{\epsilon\}\\
 \epsilon\ \hat{\&}\ s \ :=& \ \emptyset\ \ \mbox{ for } s\neq\epsilon\\
 s\ \hat{\&}\ \epsilon \ :=& \ \emptyset\ \ \mbox{ for } s\neq\epsilon
 \end{align}
-\end{subequations}
 and for all $\alpha,\alpha'\in \Sigma$,
 \begin{align}
 \alpha s~\hat{\&}~\alpha's' \ :=&~\{(\alpha\cup\alpha')s''\ | \ s''\in (\alpha 
@@ -245,7 +247,6 @@ $\Sigma$, we introduce a new
 function 
 $pad_k$ which will generate the set of strings with length $k$ which are 
 $\bc$-equivalent to $s$:
-\begin{subequations}
 \begin{align}
 pad_k(\alpha_1\cdots\alpha_n)~:=&~~\alpha_1^+\cdots\alpha_n^+\ \cap\ \Sigma^k \\
 =&~~\{
@@ -254,7 +255,6 @@ k_1,\ldots,k_n\geq 1
 \mbox{ and } \sum_{i=1}^n k_i = k \}\\
 \subset&~~\bc^{-1}\bc(\alpha_1\cdots\alpha_n)
 \end{align}
-\end{subequations}
 For example, $pad_{4}(\eboxl{a}\eboxl{c})$ will 
 generate \{
 \eboxl{a}\eboxl{a}\eboxl{a}\eboxl{c}, 
