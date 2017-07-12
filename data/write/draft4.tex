@@ -122,8 +122,8 @@ collecting the superpositions of strings of equal length from each language:
 \begin{align}
 L ~\&~ L' & \ :=\ \bigcup_{n\geq 0}
 \{s~\&~s'\ | \ s\in L\cap \Sigma^n\mbox{ and }s'\in L'\cap \Sigma^n\}
-\end{align}%$^{^{\mbox{$\ast$}}} = s$
-For example, $L ~\&~ \eboxb{}^{\mbox{$\ast$}} = L$.
+\end{align}
+For example, $L ~\&~ \eboxb{}^\ast = L$.
 If $L$ and $L'$ are regular languages computed by finite automata
 with transitions $\to$ and $\to'$, then the superposition $L~\&~ L'$ is
 a regular language computed by a finite automaton with transitions
@@ -223,8 +223,8 @@ Note that a string in $s\ \hat{\&}\ s'$ might stutter, even if neither of the
 operands $s$ or $s'$ do
 (\textit{e.g.} $\ebox{a,c}\ebox{a,c}\in
 \ebox{a}\ebox{c}\ \hat{\&}\ 
-\ebox{c}\ebox{a}$). However, it can be made stutterless through block 
-compression.
+\ebox{c}\ebox{a}$)
+-- however, it can be made stutterless through block compression.
 \paragraph{Proposition 1.} {\sl For all  $s, s' \in \Sigma^+$
 	and all $s''\in s\ \hat{\&}\ s'$,}
 \begin{align}
@@ -344,20 +344,21 @@ arbitrary numbers of event-strings: $s_1 ~\&_*~ \cdots ~\&_*~ s_n$. We can show
 that superposing $n$ unconstrained bounded event-strings will generate strings 
 of maximum length $2n + 1$.\footnote{
 \begin{math}
-\mbox{The proof is by induction:}\\
+%\mbox{Proof by induction:}\\
 \mbox{Let each string to be superposed } s_i \in \{ s_1, \ldots, s_n 
 \}~\mbox{be}~
-\ebox{}\ebox{e_i}\ebox{}\mbox{, with each }e_i \in A.\\
-\mbox{For } n = 2\mbox{: }s_1~\&_*~s_2.\\
+\ebox{}\ebox{e_i}\ebox{}\mbox{, with each }e_i \in A\\
+\mbox{For } n = 2\mbox{: }s_1~\&_*~s_2\\
 \mbox{From Proposition 1, the maximum length 
-of the result is } 3 + 3 - 1 = 5 = 2(2) + 1.\\
+of the result is } 3 + 3 - 1 = 5 = 2(2) + 1\\
 \mbox{We assume true for }n = p\mbox{, thus the maximum length of }s_1 ~\&_*~ 
-\cdots ~\&_*~ s_p\mbox{ is }2(p) + 1.\\
-\mbox{Next, we prove for }n = p + 1\mbox{: } s_1 ~\&_*~ \cdots ~\&_*~ s_{p+1} = 
-s_1 ~\&_*~ \cdots ~\&_*~ s_p~\&_*~ s_{p+1} = s_{1 \ldots p}~\&_*~s_{p+1}.\\
+\cdots ~\&_*~ s_p\mbox{ is }2(p) + 1\\
+\mbox{Next, we prove for }n = p + 1\mbox{:}\\
+s_1 ~\&_*~ \cdots ~\&_*~ s_{p+1} = s_1 ~\&_*~ \cdots ~\&_*~ s_p~\&_*~ 
+s_{p+1} = s_{1 \ldots p}~\&_*~s_{p+1}\\
 \mbox{From Proposition 1, the maximum length of the result is }(2(p) + 1) + 3 
-- 1 = 2(p + 1) + 1.\\
-\mbox{Thus true for }p+1\mbox{, and by induction, true for any }n \geq 2.
+- 1 = 2(p + 1) + 1\\
+\mbox{Thus true for }p+1\mbox{, and by induction, true for any }n \geq 2
 \end{math}}
 Note, however, that superposing even a relatively small number of 
 unconstrained bounded events leads to a massive combinatorial blowup in the 
@@ -402,10 +403,9 @@ Events of the same type may stop and start frequently, but by assuming that
 every instance of an event will have a uniquely identifying fluent, we can 
 discard any strings which feature such a resumption.\footnote{We adopt 
 simplifying assumptions made in Allen Relations, though it should be noted that 
-the distinction between event instances event types (see 
-\cite{fernando2015semantics}) is not imposed by the 
+the distinction between event instances event types is not imposed by the 
 event-string framework itself, allowing for discontinuous events (such as 
-\textit{judder}) in future work.} In this way, fluents are 
+\textit{judder}) in future work} In this way, fluents are 
 \textit{interval-like}. We define the function 
 $\rho_{X}$ on strings of sets to component-wise intersect with $X$ for 
 any $X 
@@ -444,92 +444,12 @@ as normal, but superposition is only permitted of those results of padding
 in which the indices of the matching symbols are equal. To do otherwise would 
 permit event-strings which are not well-formed.
 
-\cite{allen1983maintaining} gives a transitivity table showing the inferred 
-possible relations between two events $a$ and $c$, given the relation between 
-each and an intermediary event, $b$. Each cell of the table shows simply the 
-symbol which represent the binary relation -- we may improve on the readability 
-of this by showing explicitly the well-formed event-string(s) formed by the 
-asynchronous superposition in each case. A fragment of the entire table is 
-shown in Table \ref{table:transitivity} below:
-
-\setlength{\tabcolsep}{2.5pt}
-\renewcommand{\arraystretch}{3}
-\noindent
-\begin{table}[h!]
-\centering
-\begin{tabular}{| c | c | c | c | c |}
-	\hline
-	& 
-	\thead{``before"\\\ebox{}\ebox{b}\ebox{}\ebox{c}\ebox{}} & 
-	\thead{``during"\\\ebox{}\ebox{c}\ebox{b,c}\ebox{c}\ebox{}} & 
-	\thead{``overlaps"\\\ebox{}\ebox{b}\ebox{b,c}\ebox{c}\ebox{}} & 
-	\thead{``starts"\\\ebox{}\ebox{b,c}\ebox{c}\ebox{}}\\
-	\hline
-	\thead{``before"\\\ebox{}\ebox{a}\ebox{}\ebox{b}\ebox{}} & 
-	\thead{\ebox{}\ebox{a}\ebox{}\ebox{b}\ebox{}\ebox{c}\ebox{}} & 
-	\thead{\ebox{}\ebox{a}\ebox{}\ebox{c}\ebox{b,c}\ebox{c}\ebox{},\\ 
-		\ebox{}\ebox{a}\ebox{a,c}\ebox{c}\ebox{b,c}\ebox{c}\ebox{},\\ 
-		\ebox{}\ebox{a}\ebox{c}\ebox{b,c}\ebox{c}\ebox{},\\ 
-		\ebox{}\ebox{c}\ebox{a,c}\ebox{c}\ebox{b,c}\ebox{c}\ebox{},\\ 
-		\ebox{}\ebox{a,c}\ebox{c}\ebox{b,c}\ebox{c}\ebox{}} & 
-	\thead{\ebox{}\ebox{a}\ebox{}\ebox{b}\ebox{b,c}\ebox{c}\ebox{}} & 
-	\thead{\ebox{}\ebox{a}\ebox{}\ebox{b,c}\ebox{c}\ebox{}}\\
-	\hline
-	\thead{``during"\\\ebox{}\ebox{b}\ebox{a,b}\ebox{b}\ebox{}} & 
-	\thead{\ebox{}\ebox{b}\ebox{a,b}\ebox{b}\ebox{}\ebox{c}\ebox{}} & 
-	\thead{\ebox{}\ebox{c}\ebox{b,c}\ebox{a,b,c}\ebox{b,c}\ebox{c}\ebox{}} & 
-	\thead{\ebox{}\ebox{b}\ebox{a,b}\ebox{b}\ebox{b,c}\ebox{c}\ebox{},\\
-		\ebox{}\ebox{b}\ebox{a,b}\ebox{a,b,c}\ebox{b,c}\ebox{c}\ebox{},\\
-		\ebox{}\ebox{b}\ebox{a,b}\ebox{b,c}\ebox{c}\ebox{},\\
-		\ebox{}\ebox{b}\ebox{b,c}\ebox{a,b,c}\ebox{b,c}\ebox{c}\ebox{},\\
-		\ebox{}\ebox{b}\ebox{a,b,c}\ebox{b,c}\ebox{c}\ebox{}} & 
-	\thead{\ebox{}\ebox{b,c}\ebox{a,b,c}\ebox{b,c}\ebox{c}\ebox{}}\\
-	\hline
-	\thead{``overlaps"\\\ebox{}\ebox{a}\ebox{a,b}\ebox{b}\ebox{}} & 
-	\thead{\ebox{}\ebox{a}\ebox{a,b}\ebox{b}\ebox{}\ebox{c}\ebox{}} & 
-	\thead{\ebox{}\ebox{a}\ebox{a,c}\ebox{a,b,c}\ebox{b,c}\ebox{c}\ebox{},\\
-		\ebox{}\ebox{c}\ebox{a,c}\ebox{a,b,c}\ebox{b,c}\ebox{c}\ebox{},\\
-		\ebox{}\ebox{a,c}\ebox{a,b,c}\ebox{b,c}\ebox{c}\ebox{}} &
-	\thead{\ebox{}\ebox{a}\ebox{a,b}\ebox{b}\ebox{b,c}\ebox{c}\ebox{},\\
-		\ebox{}\ebox{a}\ebox{a,b}\ebox{a,b,c}\ebox{b,c}\ebox{c}\ebox{},\\
-		\ebox{}\ebox{a}\ebox{a,b}\ebox{b,c}\ebox{c}\ebox{}} & 
-	\thead{\ebox{}\ebox{a}\ebox{a,b,c}\ebox{b,c}\ebox{c}\ebox{}}\\
-	\hline
-	\thead{``starts"\\\ebox{}\ebox{a,b}\ebox{b}\ebox{}} & 
-	\thead{\ebox{}\ebox{a,b}\ebox{b}\ebox{}\ebox{c}\ebox{}} & 
-	\thead{\ebox{}\ebox{c}\ebox{a,b,c}\ebox{b,c}\ebox{c}\ebox{}} & 
-	\thead{\ebox{}\ebox{a,b}\ebox{b}\ebox{b,c}\ebox{c}\ebox{},\\
-		\ebox{}\ebox{a,b}\ebox{a,b,c}\ebox{b,c}\ebox{c}\ebox{},\\
-		\ebox{}\ebox{a,b}\ebox{b,c}\ebox{c}\ebox{}} & 
-	\thead{\ebox{}\ebox{a,b,c}\ebox{b,c}\ebox{c}\ebox{}} \\
-	\hline
-\end{tabular}
-\caption{Fragment of Allen Transitivity Table using event-strings}
-\label{table:transitivity}
-\end{table}
-
-\noindent
-Here and in the original table, only three events are mentioned: $a$, $b$, and 
-$c$. We can see that the asynchronous superposition of an event-string 
-$s_{a,b}$ mentioning $a$ and $b$ with an event-string $s_{b,c}$ mentioning $b$ 
-and $c$ gives a language $L$ of event-strings mentioning all three events. 
-Applying the reduct $\rho_{\{a,b\}}$ to any string in $L$ should give back 
-exactly $s_{a,b}$, and likewise applying $\rho_{\{b,c\}}$ to any string in $L$ 
-should give back exactly $s_{b,c}$. It should, in theory, be possible to 
-generalise this to any number of events, ensuring the same level of readability 
-by using event-strings.
-
 Finally, we may also introduce further constraints if external 
 information is 
 available, and these might be simply intersected with the result of a 
-superposition: $(s\ \&_* \ s') ~\cap~ C$, where $C$ represents the constraints 
-to 
+superposition: $(s\ \&_* \ s') \cap C$, where $C$ represents the constraints to 
 be applied, for example, ``$e$ is among the first events to occur in the string 
-$s$" (true iff $s ~\&~ $\eboxb{}\eboxb{e}\eboxb{}$^{^{\mbox{$\ast$}}} = 
-s$). 
-This 
-allows 
-for 
+$s$" (true iff $s ~\&~ $\eboxb{}\eboxb{e}\eboxb{}$^\ast = s$). This allows for 
 extension 
 beyond Allen Relations in the 
 future.
@@ -572,28 +492,29 @@ of TLINKs from a TimeML document:
 eventInstanceID="ei9"}}\\\label{eq:timeml2}
 \mbox{\texttt{relatedToEventInstance="ei10" origin="USER"/>}} \notag
 \end{align}
+
+\noindent
 The Allen Relation specified by \texttt{relType} will correspond to 
 one of the 13 event-strings given in Section \ref{event rep}, which will 
-in turn determine which formula the new event-string will satisfy. Example 
+in 
+turn determine which formula the new event-string will satisfy. Example 
 \ref{eq:timeml1} above gives the event-string \ebox{}\ebox{ei9}\ebox{t1, 
 ei9}\ebox{t1}\ebox{}, and example \ref{eq:timeml2} gives 
 \ebox{}\ebox{ei9}\ebox{}\ebox{ei10}\ebox{}.\footnote{Using 
 	https://www.scss.tcd.ie/$\sim$dwoods/timeml/ to quickly extract TLINKs from 
 	a 
-	TimeML document and translate them to event-strings. A non-trivial 
+	TimeML document and translate them to event-strings -- a non-trivial 
 	extension of this program which computes results of superposition is 
-	possible.} The other attributes (\texttt{lid}, \texttt{origin}) in each 
-	TLINK may be ignored for now.
+	possible}
 
 A drawback here is that for this to be effective, it relies on the events being 
 heavily constrained by their interrelations. If there are too few TLINKs 
 relative to the number of events, we still run into the problem of 
 combinatorial explosion.
 
-An additional issue in computation of the superposition of events arises as 
-multiple superposition operations are be carried out in sequence, 
-meaning unordered data may lead to a much less efficient calculation of final 
-results. For example, 
+An additional issue in computation of the 
+superposition of events arises from unordered data leading to a much less 
+efficient calculation of final results. For example, 
 \eboxl{}\eboxl{a}\eboxl{}\eboxl{b}\eboxl{}
  $\&_*$ 
  \eboxl{}\eboxl{b}\eboxl{}\eboxl{c}\eboxl{}
@@ -606,13 +527,14 @@ results. For example,
   $\&_*$ 
   \eboxl{}\eboxl{b}\eboxl{}\eboxl{c}\eboxl{}
   should produce the same, single output: 
- \eboxl{}\eboxl{a}\eboxl{}\eboxl{b}\eboxl{}\eboxl{c}\eboxl{}\eboxl{d}\eboxl{},
+ \eboxl{}\eboxl{a}\eboxl{}\eboxl{b}%
+ \eboxl{}\eboxl{c}\eboxl{}\eboxl{d}\eboxl{},
   which they do. However, due to the respective orderings, the first sequence 
  will arrive at that conclusion much faster as 
  \eboxl{}\eboxl{a}\eboxl{}\eboxl{b}\eboxl{}
  $\&_*$ 
  \eboxl{}\eboxl{b}\eboxl{}\eboxl{c}\eboxl{}
-  has one possible outcome 
+  has one outcome 
   (\eboxl{}\eboxl{a}\eboxl{}\eboxl{b}\eboxl{}\eboxl{c}%
  \eboxl{}), which can immediately be asynchronously superposed with 
  \eboxl{}\eboxl{c}\eboxl{}\eboxl{d}\eboxl{}
@@ -620,7 +542,7 @@ results. For example,
   \eboxl{}\eboxl{a}\eboxl{}\eboxl{b}\eboxl{}
   $\&_*$ 
   \eboxl{}\eboxl{c}\eboxl{}\eboxl{d}\eboxl{}
-   has 321 possible outcomes, each of which must be individually asynchronously 
+   has 321 output strings, each of which must be individually asynchronously 
   superposed with 
   \eboxl{}\eboxl{b}\eboxl{}\eboxl{c}\eboxl{},
    only to come to the same conclusion, as only one of these results is 
@@ -647,7 +569,8 @@ Let us cluster the fluents as follows: for each fluent $a \in A$, fix a set $P
 \begin{align}
 S = \{\{e_1\},\{e_2\},\{e_3\},\{e_4\},\{e_5\},\{e_6\},\{e_7\},\{e_8\}\}
 \end{align}
-Next, check for an Allen Relation between each pair of fluents $a$ and $a'$. If 
+Next, check for an Allen Relation between each pair of fluents $a$ and $a'$ -- 
+if 
 a relation exists, add the fluent $a'$ to the set $P$.
 \begin{align}
 S' = \{\{e_1, e_4, e_2\},\{e_2, e_3\}, \{e_3\}, \{e_4\}, \{e_5, e_7\}, \{e_6\}, 
@@ -680,26 +603,72 @@ constraining the strings which may be superposed, with the 13 unique
 Allen Relations forming the main part of these, as these can be found in 
 annotated corpora such as TIMEBANK, using the TimeML standard.
 
-Future work on this topic will further develop the constraints on asynchronous 
-superposition, while also examining the use of alternative models to 
+Future work on this topic will examine using alternative model-bases to 
 approach the same issue, such as using finite state automata, or a hybrid 
-string/FSA approach. We will additionally explore the potential of employing 
-methods from distributed computing in order to tackle the combinatorial 
-explosion that occurs in asynchronously superposing unconstrained bounded 
-events.
+string/FSA approach, as well as the potential of employing methods from 
+distributed computing in order to tackle the combinatorial explosion that 
+occurs in asynchronously superposing unconstrained bounded events.
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %                                                                              %
 %                             Actual Document Ends                             %
 %                                                                              %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-\section*{Acknowledgements}
-This research is supported by Science Foundation Ireland (SFI) through the CNGL 
-Programme (Grant 12/CE/I2267) in the ADAPT Centre 
-(\url{https://www.adaptcentre.ie}) at Trinity College Dublin. The
-ADAPT Centre for Digital Content Technology is funded under the SFI Research 
-Centres Programme (Grant 13/RC/2106) and is co-funded under the European 
-Regional Development Fund.
-
 \bibliographystyle{chicago}{}
 \bibliography{draft1}
+\appendix
+\section{Transitivity Table}
+\cite{allen1983maintaining} gives a transitivity table showing the inferred 
+possible relations between two events $a$ and $c$, given the relation between 
+each and an intermediary event, $b$. Each cell of the table shows simply the 
+symbol which represent the binary relation -- we may improve on the readability 
+of this by showing explicitly the event-string(s) formed by the asynchronous 
+superposition in each case. A fragment of the entire table is shown below:
+
+\setlength{\tabcolsep}{3pt}
+\renewcommand{\arraystretch}{2}
+\vspace{1em}
+\noindent
+\begin{tabular}[h]{| c | c | c | c | c |}
+	\hline
+	  & \thead{``before"\\\ebox{}\ebox{b}\ebox{}\ebox{c}\ebox{}} & 
+	  \thead{``during"\\\ebox{}\ebox{c}\ebox{b,c}\ebox{c}\ebox{}} & 
+	  \thead{``overlaps"\\\ebox{}\ebox{b}\ebox{b,c}\ebox{c}\ebox{}} & 
+	  \thead{``starts"\\\ebox{}\ebox{b,c}\ebox{c}\ebox{}}\\
+	\hline
+	\thead{``before"\\\ebox{}\ebox{a}\ebox{}\ebox{b}\ebox{}} & 
+	\thead{\ebox{}\ebox{a}\ebox{}\ebox{b}\ebox{}\ebox{c}\ebox{}} & 
+	\thead{\ebox{}\ebox{a}\ebox{}\ebox{c}\ebox{b,c}\ebox{c}\ebox{},\\ 
+		\ebox{}\ebox{a}\ebox{a,c}\ebox{c}\ebox{b,c}\ebox{c}\ebox{},\\ 
+		\ebox{}\ebox{a}\ebox{c}\ebox{b,c}\ebox{c}\ebox{},\\ 
+		\ebox{}\ebox{c}\ebox{a,c}\ebox{c}\ebox{b,c}\ebox{c}\ebox{},\\ 
+		\ebox{}\ebox{a,c}\ebox{c}\ebox{b,c}\ebox{c}\ebox{}} & 
+	\thead{\ebox{}\ebox{a}\ebox{}\ebox{b}\ebox{b,c}\ebox{c}\ebox{}} & 
+	\thead{\ebox{}\ebox{a}\ebox{}\ebox{b,c}\ebox{c}\ebox{}}\\
+	\hline
+	\thead{``during"\\\ebox{}\ebox{b}\ebox{a,b}\ebox{b}\ebox{}} & 
+	\thead{\ebox{}\ebox{b}\ebox{a,b}\ebox{b}\ebox{}\ebox{c}\ebox{}} & 
+	\thead{\ebox{}\ebox{c}\ebox{b,c}\ebox{a,b,c}\ebox{b,c}\ebox{c}\ebox{}} & 
+	\thead{\ebox{}\ebox{b}\ebox{a,b}\ebox{b}\ebox{b,c}\ebox{c}\ebox{},\\
+		\ebox{}\ebox{b}\ebox{a,b}\ebox{a,b,c}\ebox{b,c}\ebox{c}\ebox{},\\
+		\ebox{}\ebox{b}\ebox{a,b}\ebox{b,c}\ebox{c}\ebox{},\\
+		\ebox{}\ebox{b}\ebox{b,c}\ebox{a,b,c}\ebox{b,c}\ebox{c}\ebox{},\\
+		\ebox{}\ebox{b}\ebox{a,b,c}\ebox{b,c}\ebox{c}\ebox{}} & 
+	\thead{\ebox{}\ebox{b,c}\ebox{a,b,c}\ebox{b,c}\ebox{c}\ebox{}}\\
+	\hline
+	\thead{``overlaps"\\\ebox{}\ebox{a}\ebox{a,b}\ebox{b}\ebox{}} & & & & \\
+	\hline
+	\thead{``starts"\\\ebox{}\ebox{a,b}\ebox{b}\ebox{}} & & & & \\
+	\hline
+\end{tabular}
+
+\vspace{1em}
+\noindent
+Here and in the original table, only three events are mentioned: $a$, $b$, and 
+$c$. We can see that the asynchronous superposition of a string $s_{a,b}$ 
+mentioning $a$ and $b$ with a string $s_{b,c}$ mentioning $b$ and $c$ gives a 
+language $L$ of strings mentioning all three events. Applying the reduct 
+$\rho_{\{a,b\}}$ to any string in $L$ should give back exactly $s_{a,b}$, and 
+likewise applying $\rho_{\{b,c\}}$ to any string in $L$ should give back 
+exactly $s_{b,c}$. It should, in theory, be possible to generalise this to any 
+number of events.
 \end{document}
