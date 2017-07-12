@@ -8,8 +8,7 @@
 \usepackage[margin=25mm]{geometry}
 \usepackage{fancyvrb}
 \usepackage[hang,flushmargin]{footmisc}
-
-\usepackage{xcolor}
+\usepackage{makecell}
 
 % Tim's custom commands
 \newcommand{\bc}{{\rm b\!c}}
@@ -367,9 +366,8 @@ number of outcomes, or possible worlds, as each event-string generated from one
 superposition (\textit{e.g.} $s_1 ~\&_*~ s_2$) will in turn be superposed with 
 each generated from another (\textit{e.g.} $s_3 ~\&_*~ s_4$). Additionally, 
 with each fluent, the maximum possible length of the strings grows, meaning a 
-larger set of strings will be generated at the $pad$ stage. Current methods 
-to compute the result of more than five of these events have so far been 
-unsuccessful, reaching the working memory limits of the available hardware:
+larger set of strings will be generated at the $pad$ stage. The combinatorics 
+for $n$ unconstrained bounded events are as follows, up to $n = 5$:
 \begin{align*}
 2 ~\mbox{bounded events} &\to 13 ~\mbox{outcomes}\\
 3 ~\mbox{bounded events} &\to 409 ~\mbox{outcomes}\\
@@ -403,16 +401,20 @@ We assume that every fluent we encounter has exactly one beginning and one
 ending -- that is, that events do not \textit{resume} once they have ended. 
 Events of the same type may stop and start frequently, but by assuming that 
 every instance of an event will have a uniquely identifying fluent, we can 
-discard any strings which feature such a resumption. In this way, fluents are 
+discard any strings which feature such a resumption.\footnote{We adopt 
+simplifying assumptions made in Allen Relations, though it should be noted that 
+the distinction between event instances event types is not imposed by the 
+event-string framework itself, allowing for discontinuous events (such as 
+\textit{judder}) in future work} In this way, fluents are 
 \textit{interval-like}. We define the function 
-$\rho_{\{a\}}$ on strings of sets to component-wise intersect with $\{a\}$ for 
-any $a 
-\in A$ \citep{fernando2016prior}
+$\rho_{X}$ on strings of sets to component-wise intersect with $X$ for 
+any $X 
+\subseteq A$ \citep{fernando2016prior}:
 \begin{align}
-\rho_{\{a\}}(\alpha_1 \cdots \alpha_n) := (\alpha_1 \cap \{a\}) \cdots 
+\rho_{X}(\alpha_1 \cdots \alpha_n) := (\alpha_1 \cap X) \cdots 
 (\alpha_n 
 \cap 
-\{a\})
+X)
 \end{align}
 Applying block compression to an event-string which has been reduced with 
 $\rho_{\{a\}}$ should produce a single string: \eboxb{}\eboxb{a}\eboxb{}. For 
@@ -440,16 +442,16 @@ To achieve this, when a symbol $\alpha$ in $s$ is also present in $s'$, and the
 asynchronous superposition of these strings is desired, padding is carried out 
 as normal, but superposition is only permitted of those results of padding 
 in which the indices of the matching symbols are equal. To do otherwise would 
-permit event-strings which are not well-formed.%where either the interval-like 
-%constraint or the consistency constraint might be broken, which are not 
-%well-formed event-strings.
+permit event-strings which are not well-formed.
 
 Finally, we may also introduce further constraints if external 
 information is 
 available, and these might be simply intersected with the result of a 
 superposition: $(s\ \&_* \ s') \cap C$, where $C$ represents the constraints to 
-be applied. For example, ``the string may not begin with $e$" (\ebox{}\ebox{A 	
-- e}\ebox{A}*\ebox{}). This allows for extension beyond Allen Relations in the 
+be applied, for example, ``$e$ is among the first events to occur in the string 
+$s$" (true iff $s ~\&~ $\eboxb{}\eboxb{e}\eboxb{}$^\ast = s$). This allows for 
+extension 
+beyond Allen Relations in the 
 future.
 
 \section{Application to TimeML}\label{application}
@@ -471,31 +473,39 @@ simply superposing based on the fluents, and bypasses having to generate the
 initial 13 possibilities. In this way, we may generate a much smaller set of 
 possible outcomes from a larger number of bounded events.
 
+According to the TimeML specification \citep{timeml2005timeml}, a TLINK is 
+required to have the following attributes: either a \texttt{timeID} or 
+\texttt{eventInstanceID} attribute, referring to some fluent in the text, as 
+well as either a \texttt{relatedToTime} or \texttt{relatedToEventInstance} 
+attribute, which will refer to another fluent, and also a \texttt{relType} 
+attribute, declaring the relation between the two fluents. Other attributes are 
+optional and not relevant to the current discussion.
+
 In order to give a more concrete understanding, let us take a pair of examples 
-of TLINKs from a TimeML document:
-\begin{figure}[h]
-\centering
-\begin{BVerbatim}
-<TLINK lid="l9" relType="IS_INCLUDED" timeID="t1"
-    relatedToEventInstance="ei9" origin="USER"/>
-<TLINK lid="l10" relType="BEFORE" eventInstanceID="ei9" 
-    relatedToEventInstance="ei10" origin="USER"/>
-\end{BVerbatim}
-\end{figure}
+of TLINKs from a TimeML document: 
+
+\begin{align}
+\mbox{\texttt{<TLINK lid="l9" relType="IS\_INCLUDED" timeID="t1"}}\\ 
+\label{eq:timeml1}
+\mbox{\texttt{relatedToEventInstance="ei9" origin="USER"/>}} \notag\\
+\mbox{\texttt{<TLINK lid="l10" relType="BEFORE" 
+eventInstanceID="ei9"}}\\\label{eq:timeml2}
+\mbox{\texttt{relatedToEventInstance="ei10" origin="USER"/>}} \notag
+\end{align}
 
 \noindent
-The TLINK nodes will have either a \texttt{timeID} or \texttt{eventInstanceID} 
-attribute, as well as either a \texttt{relatedToTime} or 
-\texttt{relatedToEventInstance} attribute, as well as a \texttt{relType} 
-attribute. The Allen Relation specified by \texttt{relType} will correspond to 
+The Allen Relation specified by \texttt{relType} will correspond to 
 one of the 13 event-strings given in Section \ref{event rep}, which will 
 in 
-turn determine which formula the new event-string will satisfy. The examples 
-above give the event-strings \ebox{}\ebox{ei9}\ebox{t1, ei9}\ebox{t1}\ebox{}, 
-and \ebox{}\ebox{ei9}\ebox{}\ebox{ei10}\ebox{}, respectively.\footnote{Using 
+turn determine which formula the new event-string will satisfy. Example 
+\ref{eq:timeml1} above gives the event-string \ebox{}\ebox{ei9}\ebox{t1, 
+ei9}\ebox{t1}\ebox{}, and example \ref{eq:timeml2} gives 
+\ebox{}\ebox{ei9}\ebox{}\ebox{ei10}\ebox{}.\footnote{Using 
 	https://www.scss.tcd.ie/$\sim$dwoods/timeml/ to quickly extract TLINKs from 
 	a 
-	TimeML document and translate them to event-strings}
+	TimeML document and translate them to event-strings -- a non-trivial 
+	extension of this program which computes results of superposition is 
+	possible}
 
 A drawback here is that for this to be effective, it relies on the events being 
 heavily constrained by their interrelations. If there are too few TLINKs 
@@ -566,8 +576,9 @@ a relation exists, add the fluent $a'$ to the set $P$.
 S' = \{\{e_1, e_4, e_2\},\{e_2, e_3\}, \{e_3\}, \{e_4\}, \{e_5, e_7\}, \{e_6\}, 
 \{e_7\}, \{e_8, e_5\}\}
 \end{align}
-Finally, for each pair of sets $P, Q$, if $|P ~\cap~ Q| > 0$, form $R = P ~\cup~
-Q$, adding $R$ to the set $S''$ and discarding $P, Q$. Add the remaining sets 
+Finally, for each pair of sets $P, Q$, if $|P ~\cap~ Q| > 0$, form $R = P 
+~\cup~Q$, adding $R$ to the set $S''$ and discarding $P, Q$. Add the remaining 
+sets 
 from $S'$ to $S''$.
 \begin{align}
 S'' = \{\{e_1, e_4, e_2, e_3\}, \{e_5, e_7, e_8\}, \{e_6\}\}
@@ -604,4 +615,60 @@ occurs in asynchronously superposing unconstrained bounded events.
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \bibliographystyle{chicago}{}
 \bibliography{draft1}
+\appendix
+\section{Transitivity Table}
+\cite{allen1983maintaining} gives a transitivity table showing the inferred 
+possible relations between two events $a$ and $c$, given the relation between 
+each and an intermediary event, $b$. Each cell of the table shows simply the 
+symbol which represent the binary relation -- we may improve on the readability 
+of this by showing explicitly the event-string(s) formed by the asynchronous 
+superposition in each case. A fragment of the entire table is shown below:
+
+\setlength{\tabcolsep}{3pt}
+\renewcommand{\arraystretch}{2}
+\vspace{1em}
+\noindent
+\begin{tabular}[h]{| c | c | c | c | c |}
+	\hline
+	  & \thead{``before"\\\ebox{}\ebox{b}\ebox{}\ebox{c}\ebox{}} & 
+	  \thead{``during"\\\ebox{}\ebox{c}\ebox{b,c}\ebox{c}\ebox{}} & 
+	  \thead{``overlaps"\\\ebox{}\ebox{b}\ebox{b,c}\ebox{c}\ebox{}} & 
+	  \thead{``starts"\\\ebox{}\ebox{b,c}\ebox{c}\ebox{}}\\
+	\hline
+	\thead{``before"\\\ebox{}\ebox{a}\ebox{}\ebox{b}\ebox{}} & 
+	\thead{\ebox{}\ebox{a}\ebox{}\ebox{b}\ebox{}\ebox{c}\ebox{}} & 
+	\thead{\ebox{}\ebox{a}\ebox{}\ebox{c}\ebox{b,c}\ebox{c}\ebox{},\\ 
+		\ebox{}\ebox{a}\ebox{a,c}\ebox{c}\ebox{b,c}\ebox{c}\ebox{},\\ 
+		\ebox{}\ebox{a}\ebox{c}\ebox{b,c}\ebox{c}\ebox{},\\ 
+		\ebox{}\ebox{c}\ebox{a,c}\ebox{c}\ebox{b,c}\ebox{c}\ebox{},\\ 
+		\ebox{}\ebox{a,c}\ebox{c}\ebox{b,c}\ebox{c}\ebox{}} & 
+	\thead{\ebox{}\ebox{a}\ebox{}\ebox{b}\ebox{b,c}\ebox{c}\ebox{}} & 
+	\thead{\ebox{}\ebox{a}\ebox{}\ebox{b,c}\ebox{c}\ebox{}}\\
+	\hline
+	\thead{``during"\\\ebox{}\ebox{b}\ebox{a,b}\ebox{b}\ebox{}} & 
+	\thead{\ebox{}\ebox{b}\ebox{a,b}\ebox{b}\ebox{}\ebox{c}\ebox{}} & 
+	\thead{\ebox{}\ebox{c}\ebox{b,c}\ebox{a,b,c}\ebox{b,c}\ebox{c}\ebox{}} & 
+	\thead{\ebox{}\ebox{b}\ebox{a,b}\ebox{b}\ebox{b,c}\ebox{c}\ebox{},\\
+		\ebox{}\ebox{b}\ebox{a,b}\ebox{a,b,c}\ebox{b,c}\ebox{c}\ebox{},\\
+		\ebox{}\ebox{b}\ebox{a,b}\ebox{b,c}\ebox{c}\ebox{},\\
+		\ebox{}\ebox{b}\ebox{b,c}\ebox{a,b,c}\ebox{b,c}\ebox{c}\ebox{},\\
+		\ebox{}\ebox{b}\ebox{a,b,c}\ebox{b,c}\ebox{c}\ebox{}} & 
+	\thead{\ebox{}\ebox{b,c}\ebox{a,b,c}\ebox{b,c}\ebox{c}\ebox{}}\\
+	\hline
+	\thead{``overlaps"\\\ebox{}\ebox{a}\ebox{a,b}\ebox{b}\ebox{}} & & & & \\
+	\hline
+	\thead{``starts"\\\ebox{}\ebox{a,b}\ebox{b}\ebox{}} & & & & \\
+	\hline
+\end{tabular}
+
+\vspace{1em}
+\noindent
+Here and in the original table, only three events are mentioned: $a$, $b$, and 
+$c$. We can see that the asynchronous superposition of a string $s_{a,b}$ 
+mentioning $a$ and $b$ with a string $s_{b,c}$ mentioning $b$ and $c$ gives a 
+language $L$ of strings mentioning all three events. Applying the reduct 
+$\rho_{\{a,b\}}$ to any string in $L$ should give back exactly $s_{a,b}$, and 
+likewise applying $\rho_{\{b,c\}}$ to any string in $L$ should give back 
+exactly $s_{b,c}$. It should, in theory, be possible to generalise this to any 
+number of events.
 \end{document}
