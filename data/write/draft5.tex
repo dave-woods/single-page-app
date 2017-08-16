@@ -44,21 +44,6 @@
 \maketitle
 \thispagestyle{empty}
 \pagestyle{empty}
-\begin{abstract}
-\noindent
-This paper explores the use of strings as models to effectively represent event 
-data such as might be found in a document annotated with ISO-TimeML. We 
-describe 
-the translation of such data to strings, as well as a number of operations, 
-such as superposition, which may be used to manipulate these strings in order 
-to infer new information. Some advantages and limitations of the operations are 
-discussed, along with how the latter might be controlled by imposing 
-constraints on the models, in order to avoid over-generation when superposing 
-the string models. In particular, we look at how Allen Relations, which might 
-be extracted from a document annotated with ISO-TimeML, can be translated 
-simply to 
-strings, and create a useful set of constraints in doing so.
-\end{abstract}
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %                                                                              %
 %                            Actual Document Begins                            %
@@ -66,7 +51,7 @@ strings, and create a useful set of constraints in doing so.
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \section{Introduction}\label{intro}
 This paper explores the use of strings as models to effectively represent event 
-data such as might be found in a document annotated with ISO-TimeML. It is 
+data such as might be found in a document annotated with TimeML. It is 
 described how such data may be simply translated to strings, and how to infer 
 information through operations on these strings. Strings are basic 
 computational entities that can be more readily manipulated by machines than 
@@ -77,8 +62,7 @@ Given a finite set $A$ of fluents (predicates with an associated temporality),
 a string $s=\alpha_1 \cdots \alpha_n$ 
 of subsets $\alpha_i$ of $A$ can be construed as a finite model 
 consisting of $n$ moments of time $i \in \{1, \ldots, n\}$ with $\alpha_i$ 
-specifying all fluents (in $A$) that (as unary predicates) hold simultaneously 
-at $i$.
+specifying all fluents (in $A$) that (as unary predicates) hold at $i$.
 
 Throughout this paper, a fluent $a \in A$ will be understood as naming 
 an event, and the powerset $2^{A}$ of $A$ will serve as an alphabet $\Sigma = 
@@ -86,8 +70,7 @@ an event, and the powerset $2^{A}$ of $A$ will serve as an alphabet $\Sigma =
 \textit{event-string} $s \in \Sigma^+$. Such strings are finite models of 
 Monadic Second Order logic, and are amenable to finite state methods. We will 
 further restrict them in Section \ref{constraints}, with a focus on using Allen 
-Relations adopted in ISO-TimeML, in order to analyse inference over a finite 
-search 
+Relations adopted in TimeML, in order to analyse inference over a finite search 
 space.
 
 An event-string $\alpha_1 \cdots \alpha_n$ is read from left to right 
@@ -112,74 +95,7 @@ These operations are detailed in Section \ref{sp and bc}.
 
 We see that strings may provide useful finite models for event data, once 
 sufficiently constrained. This is in order to avoid a large combinatorial 
-blow-up when reconciling information from different strings.
-
-\section{Motivation in ISO-TimeML}\label{motivation}
-ISO-TimeML \citep{pustejovsky2010iso} is a standard markup language used for 
-the annotation of events (and their interrelations) in texts. Of particular 
-interest to us here are the TLINK elements, which indicate the relations 
-between pairs of fluents found in the document. Though not every fluent will 
-necessarily be linked with another in this manner, a majority will be. The 
-TIMEBANK Corpus \citep{pustejovsky2003timebank} provides a large number of 
-documents annotated using the 1.1 TimeML standard (a predecessor to 
-ISO-TimeML), which we may extract TLINKs from.
-
-According to the markup specification \citep{timeml2005timeml}, a TLINK is 
-required to have the following attributes: either a \texttt{timeID} or 
-\texttt{eventInstanceID} attribute, referring to some fluent in the text, as 
-well as either a \texttt{relatedToTime} or \texttt{relatedToEventInstance} 
-attribute, which will refer to another fluent, and also a \texttt{relType} 
-attribute, declaring the relation between the two fluents. Other attributes are 
-optional and not relevant to the current discussion.
-
-In order to give a more concrete understanding, let us take a small fragment 
-from an ISO-TimeML document, which will give us three TLINK nodes:
-\begin{subequations}
-\begin{align}
-\label{example:tlink1}\mbox{\texttt{<TLINK lid="l2" relType="IS\_INCLUDED" 
-		eventInstanceId="ei1"}}\\ 
-\mbox{\texttt{relatedToTime="t1" origin="USER"/>}} \notag\\
-\label{example:tlink2}\mbox{\texttt{<TLINK lid="l9" relType="IS\_INCLUDED" 
-		timeID="t1"}}\\ 
-\mbox{\texttt{relatedToEventInstance="ei9" origin="USER"/>}} \notag\\
-\label{example:tlink3}\mbox{\texttt{<TLINK lid="l10" relType="BEFORE" 
-		eventInstanceID="ei9"}}\\
-\mbox{\texttt{relatedToEventInstance="ei10" origin="USER"/>}} \notag
-\end{align}
-\end{subequations}
-The value of \texttt{relType} will correspond to exactly one of the relations 
-described in \cite{allen1983maintaining}, though it should be noted that some 
-of these Allen Relations can correspond to multiple \texttt{relType}s (for 
-example, \texttt{IDENTITY} and \texttt{SIMULTANEOUS} are both covered by the 
-Allen Relation \textit{equal}). The other attributes (\texttt{lid}, 
-\texttt{origin}) in each TLINK may be ignored for now.
-
-We can represent the information in 
-\ref{example:tlink1}--\ref{example:tlink3} in predicate logic as 
-follows:
-\begin{subequations}
-	\begin{align}
-	&Includes~(t1,ei1)\\
-	&Includes~(ei9,t1)\\
-	&Before~(ei9,ei10)
-	\end{align}
-\end{subequations}
-where $Includes$ (the inverse of \texttt{IS\_INCLUDED}) and $Before$ are binary 
-relations, corresponding to the Allen Relations \textit{during (inverse)} and 
-\textit{before}, respectively (see Section \ref{event rep}).
-
-An issue with this representation is that the full picture of the  
-chronological sequence of events is not intuitively obvious from the three 
-predicates. It is possible to create a set of inference rules (see 
-\citealp{setzer2005role}) which allow for drawing new conclusions from the 
-given information -- for example, that the predicate $Before~(t1, ei10)$ also 
-holds. However, as these are binary relations, it is necessary to perform 
-chained conjunctions in order to reason about more than two fluents at once.
- 
-Using an event-string, we may include all of the above information in a single, 
-readable string, which allows us to reason about the relations between any 
-number of fluents. Additionally, we provide facilities to infer new relations 
-from this event-string (see Section \ref{constraints}).
+blowup when reconciling information from different strings.
 
 \section{Superposition and Block Compression}\label{sp and bc}
 With two strings $s$ and $s'$ of the same length $n$
@@ -339,9 +255,10 @@ k_1,\ldots,k_n\geq 1
 \end{align}
 \end{subequations}
 For example, $pad_{4}(\eboxl{a}\eboxl{c})$ will 
-generate \{\eboxl{a}\eboxl{a}\eboxl{a}\eboxl{c}, 
+generate \{
+\eboxl{a}\eboxl{a}\eboxl{a}\eboxl{c}, 
 \eboxl{a}\eboxl{a}\eboxl{c}\eboxl{c}, 
-\eboxl{a}\eboxl{c}\eboxl{c}\eboxl{c}\}. We 
+\eboxl{a}\eboxl{c}\eboxl{c}\eboxl{c} \}. We 
 can use this new function in our 
 calculation of asynchronous superposition, to limit the generation of strings 
 from the inverse block compression step. Since we know from Proposition 1 that 
@@ -375,7 +292,7 @@ us to represent the fact that they are finite -- they have a beginning and
 ending point. It is prudent to assume that we will deal only with finite event 
 data, such that there are no fluents which do not have both an associated 
 start-point and end-point. If such a non-finite fluent without a begining and 
-ending were to occur, it could trivially appear in every position in the 
+ending were to occur, it would could trivially appear in every position in the 
 event-string. 
 
 The bounding boxes represent the time 
@@ -383,40 +300,40 @@ before and after the event occurs, during which no other fluents $a \in A$
 are mentioned. The 
 event-strings associated with the Allen Relations are laid out 
 below:
-
 \begin{center}
 	\begin{tabular}{ l@{\hskip 1in}c@{\hskip 1in}r }
-		$e~\mathbf{=}~e'$ & \ebox{}\ebox{e, e'}\ebox{} & equal\\[0.4em]		
+		$e~\mathbf{=}~e'$ & \ebox{}\ebox{e, e'}\ebox{} & equal\\[0.6em]		
 		$e~\mathbf{s}~e'$ & \ebox{}\ebox{e, e'}\ebox{e'}\ebox{} & 
-		starts\\[0.4em]
+		starts\\[0.6em]
 		$e~\mathbf{si}~e'$ & \ebox{}\ebox{e, e'}\ebox{e}\ebox{} & 		
-		starts~(inverse)\\[0.4em]
+		starts~(inverse)\\[0.6em]
 		$e~\mathbf{f}~e'$ & \ebox{}\ebox{e'}\ebox{e, e'}\ebox{} & 		
-		finishes\\[0.4em]
+		finishes\\[0.6em]
 		$e~\mathbf{fi}~e'$ & \ebox{}\ebox{e}\ebox{e, e'}\ebox{} &		
-		finishes~(inverse)\\[0.4em]
+		finishes~(inverse)\\[0.6em]
 		$e~\mathbf{d}~e'$ & \ebox{}\ebox{ e'}\ebox{e, e'}\ebox{ e'}\ebox{} & 
-		during\\[0.4em]
+		during\\[0.6em]
 		$e~\mathbf{di}~e'$ & \ebox{}\ebox{ e}\ebox{e, e'}\ebox{e}\ebox{} & 
-		during~(inverse)\\[0.4em]
+		during~(inverse)\\[0.6em]
 		$e~\mathbf{o}~e'$ & \ebox{}\ebox{ e}\ebox{e, e'}\ebox{ e'}\ebox{} & 
-		overlaps\\[0.4em]
+		overlaps\\[0.6em]
 		$e~\mathbf{oi}~e'$ & \ebox{}\ebox{e'}\ebox{e, e'}\ebox{e}\ebox{} & 
-		overlaps~(inverse)\\[0.4em]
-		$e~\mathbf{m}~e'$ & \ebox{}\ebox{ e}\ebox{e'}\ebox{} & meets\\[0.4em]
+		overlaps~(inverse)\\[0.6em]
+		$e~\mathbf{m}~e'$ & \ebox{}\ebox{ e}\ebox{e'}\ebox{} & meets\\[0.6em]
 		$e~\mathbf{mi}~e'$ & \ebox{}\ebox{e'}\ebox{ e}\ebox{} & 
-		meets~(inverse)\\[0.4em]
+		meets~(inverse)\\[0.6em]
 		$e~\mathbf{<}~e'$ & \ebox{}\ebox{e}\ebox{}\ebox{ e'}\ebox{} & 
-		before\\[0.4em]
+		before\\[0.6em]
 		$e~\mathbf{>}~e'$ & \ebox{}\ebox{e'}\ebox{}\ebox{ e}\ebox{} & 
 		after
 	\end{tabular}
 \end{center}
-These Allen Relations are included in the attributes of ISO-TimeML, as types of 
-relation annotated by TLINKs (though some relations are named slightly 
-differently). By extracting the TLINKs from an annotated document, and 
-translating them to our event-string representation (see Section 
-\ref{application}), we may begin to reason about the relationships between 
+These Allen Relations are included in the attributes of ISO-TimeML 
+\citep{pustejovsky2010iso}, the standard 
+markup language used for event annotation in texts, as TLINKs. By extracting 
+the TLINKs from an annotated document, and translating them to our event-string 
+representation (see Section \ref{application}), we may begin to reason about 
+the relationships between 
 annotated events which do not have an associated TLINK in the markup. For 
 example, the document may give us a relation between events $e$ and $e'$, and 
 another relation between $e'$ and $e''$, and from this we may infer the 
@@ -443,7 +360,7 @@ s_1 ~\&_*~ \cdots ~\&_*~ s_p~\&_*~ s_{p+1} = s_{1 \ldots p}~\&_*~s_{p+1}.\\
 \mbox{Thus true for }p+1\mbox{, and by induction, true for any }n \geq 2.
 \end{math}}
 Note, however, that superposing even a relatively small number of 
-unconstrained bounded events leads to a massive combinatorial blow-up in the 
+unconstrained bounded events leads to a massive combinatorial blowup in the 
 number of outcomes, or possible worlds, as each event-string generated from one 
 superposition (\textit{e.g.} $s_1 ~\&_*~ s_2$) will in turn be superposed with 
 each generated from another (\textit{e.g.} $s_3 ~\&_*~ s_4$). Additionally, 
@@ -486,7 +403,7 @@ every instance of an event will have a uniquely identifying fluent, we can
 discard any strings which feature such a resumption.\footnote{We adopt 
 simplifying assumptions made in Allen Relations, though it should be noted that 
 the distinction between event instances event types (see 
-\citealp{fernando2015semantics}) is not imposed by the 
+\cite{fernando2015semantics}) is not imposed by the 
 event-string framework itself, allowing for discontinuous events (such as 
 \textit{judder}) in future work.} In this way, fluents are 
 \textit{interval-like}. We define the function 
@@ -545,7 +462,7 @@ shown in Table \ref{table:transitivity} below:
 	& 
 	\thead{``before"\\\ebox{}\ebox{b}\ebox{}\ebox{c}\ebox{}} & 
 	\thead{``during"\\\ebox{}\ebox{c}\ebox{b,c}\ebox{c}\ebox{}} & 
-	\thead{``meets"\\\ebox{}\ebox{b}\ebox{c}\ebox{}} & 
+	\thead{``overlaps"\\\ebox{}\ebox{b}\ebox{b,c}\ebox{c}\ebox{}} & 
 	\thead{``starts"\\\ebox{}\ebox{b,c}\ebox{c}\ebox{}}\\
 	\hline
 	\thead{``before"\\\ebox{}\ebox{a}\ebox{}\ebox{b}\ebox{}} & 
@@ -555,27 +472,35 @@ shown in Table \ref{table:transitivity} below:
 		\ebox{}\ebox{a}\ebox{c}\ebox{b,c}\ebox{c}\ebox{},\\ 
 		\ebox{}\ebox{c}\ebox{a,c}\ebox{c}\ebox{b,c}\ebox{c}\ebox{},\\ 
 		\ebox{}\ebox{a,c}\ebox{c}\ebox{b,c}\ebox{c}\ebox{}} & 
-	\thead{\ebox{}\ebox{a}\ebox{}\ebox{b}\ebox{c}\ebox{}} & 
+	\thead{\ebox{}\ebox{a}\ebox{}\ebox{b}\ebox{b,c}\ebox{c}\ebox{}} & 
 	\thead{\ebox{}\ebox{a}\ebox{}\ebox{b,c}\ebox{c}\ebox{}}\\
 	\hline
 	\thead{``during"\\\ebox{}\ebox{b}\ebox{a,b}\ebox{b}\ebox{}} & 
 	\thead{\ebox{}\ebox{b}\ebox{a,b}\ebox{b}\ebox{}\ebox{c}\ebox{}} & 
 	\thead{\ebox{}\ebox{c}\ebox{b,c}\ebox{a,b,c}\ebox{b,c}\ebox{c}\ebox{}} & 
-	\thead{\ebox{}\ebox{b}\ebox{a,b}\ebox{b}\ebox{c}\ebox{}} & 
+	\thead{\ebox{}\ebox{b}\ebox{a,b}\ebox{b}\ebox{b,c}\ebox{c}\ebox{},\\
+		\ebox{}\ebox{b}\ebox{a,b}\ebox{a,b,c}\ebox{b,c}\ebox{c}\ebox{},\\
+		\ebox{}\ebox{b}\ebox{a,b}\ebox{b,c}\ebox{c}\ebox{},\\
+		\ebox{}\ebox{b}\ebox{b,c}\ebox{a,b,c}\ebox{b,c}\ebox{c}\ebox{},\\
+		\ebox{}\ebox{b}\ebox{a,b,c}\ebox{b,c}\ebox{c}\ebox{}} & 
 	\thead{\ebox{}\ebox{b,c}\ebox{a,b,c}\ebox{b,c}\ebox{c}\ebox{}}\\
 	\hline
-	\thead{``meets"\\\ebox{}\ebox{a}\ebox{b}\ebox{}} & 
-	\thead{\ebox{}\ebox{a}\ebox{b}\ebox{}\ebox{c}\ebox{}} & 
-	\thead{\ebox{}\ebox{a}\ebox{a,c}\ebox{b,c}\ebox{c}\ebox{},\\
-		\ebox{}\ebox{c}\ebox{a,c}\ebox{b,c}\ebox{c}\ebox{},\\
-		\ebox{}\ebox{a,c}\ebox{b,c}\ebox{c}\ebox{}} &
-	\thead{\ebox{}\ebox{a}\ebox{b}\ebox{c}\ebox{}} & 
-	\thead{\ebox{}\ebox{a}\ebox{b,c}\ebox{c}\ebox{}}\\
+	\thead{``overlaps"\\\ebox{}\ebox{a}\ebox{a,b}\ebox{b}\ebox{}} & 
+	\thead{\ebox{}\ebox{a}\ebox{a,b}\ebox{b}\ebox{}\ebox{c}\ebox{}} & 
+	\thead{\ebox{}\ebox{a}\ebox{a,c}\ebox{a,b,c}\ebox{b,c}\ebox{c}\ebox{},\\
+		\ebox{}\ebox{c}\ebox{a,c}\ebox{a,b,c}\ebox{b,c}\ebox{c}\ebox{},\\
+		\ebox{}\ebox{a,c}\ebox{a,b,c}\ebox{b,c}\ebox{c}\ebox{}} &
+	\thead{\ebox{}\ebox{a}\ebox{a,b}\ebox{b}\ebox{b,c}\ebox{c}\ebox{},\\
+		\ebox{}\ebox{a}\ebox{a,b}\ebox{a,b,c}\ebox{b,c}\ebox{c}\ebox{},\\
+		\ebox{}\ebox{a}\ebox{a,b}\ebox{b,c}\ebox{c}\ebox{}} & 
+	\thead{\ebox{}\ebox{a}\ebox{a,b,c}\ebox{b,c}\ebox{c}\ebox{}}\\
 	\hline
 	\thead{``starts"\\\ebox{}\ebox{a,b}\ebox{b}\ebox{}} & 
 	\thead{\ebox{}\ebox{a,b}\ebox{b}\ebox{}\ebox{c}\ebox{}} & 
 	\thead{\ebox{}\ebox{c}\ebox{a,b,c}\ebox{b,c}\ebox{c}\ebox{}} & 
-	\thead{\ebox{}\ebox{a,b}\ebox{b}\ebox{c}\ebox{}} & 
+	\thead{\ebox{}\ebox{a,b}\ebox{b}\ebox{b,c}\ebox{c}\ebox{},\\
+		\ebox{}\ebox{a,b}\ebox{a,b,c}\ebox{b,c}\ebox{c}\ebox{},\\
+		\ebox{}\ebox{a,b}\ebox{b,c}\ebox{c}\ebox{}} & 
 	\thead{\ebox{}\ebox{a,b,c}\ebox{b,c}\ebox{c}\ebox{}} \\
 	\hline
 \end{tabular}
@@ -588,76 +513,82 @@ Here and in the original table, only three events are mentioned: $a$, $b$, and
 $c$. We can see that the asynchronous superposition of an event-string 
 $s_{a,b}$ mentioning $a$ and $b$ with an event-string $s_{b,c}$ mentioning $b$ 
 and $c$ gives a language $L$ of event-strings mentioning all three events. 
-Applying the reduct $\rho_{\{a,b\}}$ to any string in $L$ (and 
-block compressing the result) should give back exactly $s_{a,b}$, and likewise 
-applying $\rho_{\{b,c\}}$ to any string in $L$ should give back exactly 
-$s_{b,c}$. It should, in theory, be possible to generalise this to any number 
-of events, ensuring the same level of readability by using event-strings. Then 
-for an event-string of arbitrary length featuring any number of fluents, we can 
-apply the reduct $\rho_{\{e,e'\}}$ and block compress the result to obtain the 
-Allen Relation between fluents $e$ and $e'$ by comparing with the event-strings 
-corresponding to each Allen Relation, laid out in Section \ref{event rep}.
+Applying the reduct $\rho_{\{a,b\}}$ to any string in $L$ should give back 
+exactly $s_{a,b}$, and likewise applying $\rho_{\{b,c\}}$ to any string in $L$ 
+should give back exactly $s_{b,c}$. It should, in theory, be possible to 
+generalise this to any number of events, ensuring the same level of readability 
+by using event-strings.
 
 Finally, we may also introduce further constraints if external 
 information is 
 available, and these might be simply intersected with the result of a 
 superposition: $(s\ \&_* \ s') ~\cap~ C$, where $C$ represents the constraints 
-to be applied, for example, ``$e$ is among the first events to occur in the 
-string $s$" (true iff $s ~\&~ $\eboxb{}\eboxb{e}\eboxb{}$^{^{\mbox{$\ast$}}} = 
-s$). This allows for extension beyond Allen Relations in the future.
+to 
+be applied, for example, ``$e$ is among the first events to occur in the string 
+$s$" (true iff $s ~\&~ $\eboxb{}\eboxb{e}\eboxb{}$^{^{\mbox{$\ast$}}} = 
+s$). 
+This 
+allows 
+for 
+extension 
+beyond Allen Relations in the 
+future.
 
-\section{Application to ISO-TimeML}\label{application}
-As mentioned in Section \ref{event rep}, attempting to 
+\section{Application to TimeML}\label{application}
+The TIMEBANK Corpus \citep{pustejovsky2003timebank} provides a large number of 
+documents annotated using TimeML, from which we may extract the event data -- 
+in particular the TLINKs. These elements in the markup indicate the relation 
+holding between two fluents which was found in the text of the document. Though 
+not every fluent will necessarily be linked with another in this manner, a 
+majority will be.  As mentioned in Section \ref{event rep}, attempting to 
 generate all of the possible worlds becomes difficult when using just the 
 unconstrained bounded event-strings alone, as there are just too many (rarely, 
-if ever, featuring five fluents or fewer). Instead, we begin by looking at just 
-those fluents which are linked to another by Allen Relation, which we may 
-extract from the TLINKs in a document annotated with ISO-TimeML, as noted in 
-Section \ref{motivation}.
+if ever, five or fewer). Instead, we begin by looking at just those fluents 
+which are linked to another by Allen Relation.
 
-As each relation corresponds exactly to one possible model, we translate the 
-TLINKs immediately to the appropriate event-strings, and superpose these 
-according to the constraints mentioned in Section \ref{constraints}. This 
-allows us to avoid simply superposing based on the fluents, and bypasses having 
-to generate the initial 13 possibilities. In this way, we may generate a much 
-smaller set of possible outcomes from a larger number of bounded events.
+As each relation corresponds exactly to one possible model, we translate them 
+immediately to the appropriate event-strings, and superpose these according to 
+the constraints mentioned in Section \ref{constraints}. This allows us to avoid 
+simply superposing based on the fluents, and bypasses having to generate the 
+initial 13 possibilities. In this way, we may generate a much smaller set of 
+possible outcomes from a larger number of bounded events.
 
-We can now rewrite the information given in the three TLINKs 
-\ref{example:tlink1}--\ref{example:tlink3} as the following 
-event-strings:\footnote{Using https://www.scss.tcd.ie/$\sim$dwoods/timeml/ to 
-quickly extract TLINKs from an ISO-TimeML document and translate them to 
-event-strings. A non-trivial extension of this program which computes results 
-of superposition is possible.}
+According to the TimeML specification \citep{timeml2005timeml}, a TLINK is 
+required to have the following attributes: either a \texttt{timeID} or 
+\texttt{eventInstanceID} attribute, referring to some fluent in the text, as 
+well as either a \texttt{relatedToTime} or \texttt{relatedToEventInstance} 
+attribute, which will refer to another fluent, and also a \texttt{relType} 
+attribute, declaring the relation between the two fluents. Other attributes are 
+optional and not relevant to the current discussion.
 
-\begin{subequations}
+In order to give a more concrete understanding, let us take a pair of examples 
+of TLINKs from a TimeML document: 
+
 \begin{align}
-\ebox{}\ebox{t1}\ebox{ei1,t1}\ebox{t1}\ebox{}\\
-\ebox{}\ebox{ei9}\ebox{t1,ei9}\ebox{ei9}\ebox{}\\
-\ebox{}\ebox{ei9}\ebox{}\ebox{ei10}\ebox{}
+\mbox{\texttt{<TLINK lid="l9" relType="IS\_INCLUDED" timeID="t1"}}\\ 
+\label{eq:timeml1}
+\mbox{\texttt{relatedToEventInstance="ei9" origin="USER"/>}} \notag\\
+\mbox{\texttt{<TLINK lid="l10" relType="BEFORE" 
+eventInstanceID="ei9"}}\\\label{eq:timeml2}
+\mbox{\texttt{relatedToEventInstance="ei10" origin="USER"/>}} \notag
 \end{align}
-\end{subequations}
-
-We may asynchronously superpose these event-strings while respecting the 
-established constraints in order to generate a new event-string which contains 
-all of the information from each of the inputs:
-\begin{align}
-\ebox{}\ebox{ei9}\ebox{t1,ei9}\ebox{ei1,t1,ei9}\ebox{t1,ei9}\ebox{ei9}\ebox{}\ebox{ei10}\ebox{}
-\end{align}
-A clear advantage here is the compact, readable representation. Furthermore, we 
-can infer the Allen Relation between any two fluents in this event-string $s$ 
-by applying a reduct and block compressing the result. For example, to infer the
-relationship between $ei1$ and $ei10$, we obtain $s' = 
-\bc{}(\rho_{\{ei1,ei10\}}(s)) = $ \ebox{}\ebox{ei1}\ebox{}\ebox{ei10}\ebox{}, 
-from which we can conclude that the Allen Relation $ei1$ \textit{before} $ei10$ 
-holds.
+The Allen Relation specified by \texttt{relType} will correspond to 
+one of the 13 event-strings given in Section \ref{event rep}, which will 
+in turn determine which formula the new event-string will satisfy. Example 
+\ref{eq:timeml1} above gives the event-string \ebox{}\ebox{ei9}\ebox{t1, 
+ei9}\ebox{t1}\ebox{}, and example \ref{eq:timeml2} gives 
+\ebox{}\ebox{ei9}\ebox{}\ebox{ei10}\ebox{}.\footnote{Using 
+	https://www.scss.tcd.ie/$\sim$dwoods/timeml/ to quickly extract TLINKs from 
+	a 
+	TimeML document and translate them to event-strings. A non-trivial 
+	extension of this program which computes results of superposition is 
+	possible.} The other attributes (\texttt{lid}, \texttt{origin}) in each 
+	TLINK may be ignored for now.
 
 A drawback here is that for this to be effective, it relies on the events being 
 heavily constrained by their interrelations. If there are too few TLINKs 
 relative to the number of events, we still run into the problem of 
-combinatorial explosion. What's more, as seen in Table 
-\ref{table:transitivity}, some asynchronous superpositions will still generate 
-multiple disjoint possibilities (such as $a$ \textit{before} $b$ with $b$ 
-\textit{during} $c$), which will also impact the combinatorial problem.
+combinatorial explosion.
 
 An additional issue in computation of the superposition of events arises as 
 multiple superposition operations are be carried out in sequence, 
@@ -693,7 +624,7 @@ results. For example,
   superposed with 
   \eboxl{}\eboxl{b}\eboxl{}\eboxl{c}\eboxl{},
    only to come to the same conclusion, as only one of these results is 
-  well-formed.
+  consistent.
 
 One potential way to work around this pitfall is a grouping and ordering stage, 
 where initially only events linked by some relation may be superposed, and only 
@@ -744,10 +675,10 @@ We have explored in this work the possibility of using strings as basis for
 modelling event data, motivated by their nature as computational entities. The 
 operation of asynchronous superposition was described for composing strings 
 which represent finite, bounded events, as well as its limits in terms of 
-blow-up when the operation is repeated in sequence. The problem is addressed by 
+blowup when the operation is repeated in sequence. The problem is addressed by 
 constraining the strings which may be superposed, with the 13 unique 
 Allen Relations forming the main part of these, as these can be found in 
-annotated corpora such as TIMEBANK, using the ISO-TimeML standard.
+annotated corpora such as TIMEBANK, using the TimeML standard.
 
 Future work on this topic will further develop the constraints on asynchronous 
 superposition, while also examining the use of alternative models to 
