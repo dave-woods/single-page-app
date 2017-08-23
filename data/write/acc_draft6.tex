@@ -74,20 +74,21 @@ the infinite models of predicate logic. Finite sets of strings serve as finite
 models.
 
 Given a finite set $A$ of fluents (predicates with an associated temporality), 
-and treating sets as symbols so that we might construct a representational 
-string from them (as in \citealp{fernando2016regular}),
-a string $s=\alpha_1 \cdots \alpha_n$ of subsets $\alpha_i$ of $A$ can be 
-construed as a finite model consisting of $n$ moments of time $i \in \{1, 
-\ldots, n\}$ with $\alpha_i$ specifying all fluents (in $A$) that (as unary 
-predicates) hold simultaneously at $i$.
+a string $s=\alpha_1 \cdots \alpha_n$ 
+of subsets $\alpha_i$ of $A$ can be construed as a finite model 
+consisting of $n$ moments of time $i \in \{1, \ldots, n\}$ with $\alpha_i$ 
+specifying all fluents (in $A$) that (as unary predicates) hold simultaneously 
+at $i$.
 
 Throughout this paper, a fluent $a \in A$ will be understood as naming 
 an event, and the powerset $2^{A}$ of $A$ will serve as an alphabet $\Sigma = 
-2^{A}$ of an \textit{event-string} $s \in \Sigma^+$. Such strings are finite 
-models of Monadic Second Order logic, and are amenable to finite state methods. 
-We will further restrict them in Section \ref{constraints}, with a focus on 
-using Allen Relations adopted in ISO-TimeML, in order to analyse inference over 
-a finite search space.
+2^{A}$ of an 
+\textit{event-string} $s \in \Sigma^+$. Such strings are finite models of 
+Monadic Second Order logic, and are amenable to finite state methods. We will 
+further restrict them in Section \ref{constraints}, with a focus on using Allen 
+Relations adopted in ISO-TimeML, in order to analyse inference over a finite 
+search 
+space.
 
 An event-string $\alpha_1 \cdots \alpha_n$ is read from left to right 
 chronologically, 
@@ -105,23 +106,13 @@ affecting the interpretation of the string, as the remaining symbol is simply
 taken as representing a longer moment. This operation of removing 
 repetition from 
 the event-string is known as \textit{block compression} 
-\citep{fernando2016regular}. The inverse of this process introduces repeated 
+\citep{fernando2016prior}. The inverse of this process introduces repeated 
 elements in an event-string for greater flexibility in manipulating strings. 
 These operations are detailed in Section \ref{sp and bc}.
 
 We see that strings may provide useful finite models for event data, once 
 sufficiently constrained. This is in order to avoid a large combinatorial 
 blow-up when reconciling information from different strings.
-
-In the following section, we see an example from ISO-TimeML which we might 
-convert to an event-string, and why it would be useful to do so. Sections 
-\ref{sp and bc} and \ref{upper} provide the formal string operations used to 
-manipulate and combine information from event-strings. How these operations are 
-useful in regards to Allen Relations is described in Section \ref{event rep}, 
-and Section \ref{constraints} explores constraints to prevent malformed 
-event-strings. Finally, Section \ref{application} shows how the framework can 
-be 
-applied to data from an ISO-TimeML document.
 
 \section{Motivation in ISO-TimeML}\label{motivation}
 ISO-TimeML \citep{pustejovsky2010iso} is a standard markup language used for 
@@ -164,17 +155,16 @@ Allen Relation \textit{equal}). The other attributes (\texttt{lid},
 \texttt{origin}) in each TLINK may be ignored for now.
 
 We can represent the information in 
-(\ref{example:tlink1})--(\ref{example:tlink3}) in predicate logic as 
+\ref{example:tlink1}--\ref{example:tlink3} in predicate logic as 
 follows:
 \begin{subequations}
 	\begin{align}
-	&\mbox{\textit{Includes}}(t1,ei1)\\
-	&\mbox{\textit{Includes}}(ei9,t1)\\
-	&\mbox{\textit{Before}}(ei9,ei10)
+	&Includes~(t1,ei1)\\
+	&Includes~(ei9,t1)\\
+	&Before~(ei9,ei10)
 	\end{align}
 \end{subequations}
-where \textit{Includes} (the inverse of \texttt{IS\_INCLUDED}) and 
-\textit{Before} are binary 
+where $Includes$ (the inverse of \texttt{IS\_INCLUDED}) and $Before$ are binary 
 relations, corresponding to the Allen Relations \textit{during (inverse)} and 
 \textit{before}, respectively (see Section \ref{event rep}).
 
@@ -182,11 +172,9 @@ An issue with this representation is that the full picture of the
 chronological sequence of events is not intuitively obvious from the three 
 predicates. It is possible to create a set of inference rules (see 
 \citealp{setzer2005role}) which allow for drawing new conclusions from the 
-given information -- for example, that the predicate \textit{Before}$(t1, 
-ei10)$ also 
-holds. However, the amount of information that can be obtained from any single 
-binary relation is relatively small, and reasoning about more than two fluents 
-at once can require the conjunction of multiple relations.
+given information -- for example, that the predicate $Before~(t1, ei10)$ also 
+holds. However, as these are binary relations, it is necessary to perform 
+chained conjunctions in order to reason about more than two fluents at once.
  
 Using an event-string, we may include all of the above information in a single, 
 readable string, which allows us to reason about the relations between any 
@@ -194,12 +182,10 @@ number of fluents. Additionally, we provide facilities to infer new relations
 from this event-string (see Section \ref{constraints}).
 
 \section{Superposition and Block Compression}\label{sp and bc}
-In order to usefully collect information from multiple strings into a single 
-string, we define here the operation of \textit{superposition}.
 With two strings $s$ and $s'$ of the same length $n$
 built from an alphabet $\Sigma$, the powerset of some fixed set 
 $A$,
-the superposition $s ~\&~ s'$ of $s$ and $s'$ is their componentwise 
+the \textit{superposition} $s ~\&~ s'$ of $s$ and $s'$ is their componentwise 
 union:
 \begin{align}
 \alpha_1\cdots\alpha_n \ \&\ 
@@ -249,7 +235,7 @@ state by using ``block compression":
 \begin{align}
 \bc(s)  &\ \ :=\ \
 \left\{ \begin{array}{ll}
-s & \mbox{ if \textit{length}}(s)\leq 1 \\
+s & \mbox{ if }~length(s)\leq 1 \\
 \bc({\alpha}s')  & \mbox{ if } s={\alpha}{\alpha}s'\\
 \alpha ~{\bc}({\alpha'}{s'})  
 & \mbox{ if } s=\alpha{\alpha'}{s'} \mbox{ with } \alpha\neq\alpha'
@@ -299,8 +285,6 @@ $\bc$-equivalent strings) produced through asynchronous superposition will be
 of length $n+n'-1$.
 
 \section{Upper Bound on Asynchronous Superposition}\label{upper}
-The aforementioned bound on the length of superposed strings can be established 
-as follows.
 For all $s,s'\in \Sigma^{\ast}$, we define a finite set
 $s~\hat{\&}~s'$ of strings over $\Sigma$ with enough of 
 the strings in $\bc^{-1}\bc(s)~\&~\bc^{-1}\bc(s')$
@@ -328,8 +312,7 @@ compression.
 \paragraph{Proposition 1.} {\sl For all  $s, s' \in \Sigma^+$
 	and all $s''\in s\ \hat{\&}\ s'$,}
 \begin{align}
-\mbox{\textit{length}}(s'')\ \leq\ \mbox{\textit{length}}(s) + 
-\mbox{\textit{length}}(s') -1
+\mbox{length}(s'')\ \leq\ \mbox{length}(s) + \mbox{length}(s') -1
 \end{align}
 \paragraph{Proposition 2.} {\sl For all $s,s'\in \Sigma^+$,}
 \begin{align}
@@ -466,34 +449,14 @@ superposition (\textit{e.g.} $s_1 ~\&_*~ s_2$) will in turn be superposed with
 each generated from another (\textit{e.g.} $s_3 ~\&_*~ s_4$). Additionally, 
 with each fluent, the maximum possible length of the strings grows, meaning a 
 larger set of strings will be generated at the $pad$ stage. The combinatorics 
-for $n$ unconstrained bounded events are show in Table 
-\ref{table:combinatorics}, up to $n = 5$.
-\noindent
-\begin{table}[h!]
-	\centering
-	\begin{tabular}{| c | c |}
-		\hline
-		\thead{\textbf{Number of unconstrained bounded events}} & 
-		\thead{\textbf{Number of outcomes from asynchronous superposition}}\\
-		\hline
-		\thead{2} & 
-		\thead{13}\\
-		\hline
-		\thead{3} & 
-		\thead{409}\\
-		\hline
-		\thead{4} & 
-		\thead{23917}\\
-		\hline
-		\thead{5} & 
-		\thead{2244361}\\
-		\hline
-	\end{tabular}
-	\caption{Outcomes of Asynchronous Superposition with $n$ Inputs}
-	\label{table:combinatorics}
-\end{table}
-Clearly, simply superposing bounded events in this manner is not feasible, 
-given the huge growth in the number of possible outcomes, and 
+for $n$ unconstrained bounded events are as follows, up to $n = 5$:
+\begin{align*}
+2 ~\mbox{bounded events} &\to 13 ~\mbox{outcomes}\\
+3 ~\mbox{bounded events} &\to 409 ~\mbox{outcomes}\\
+4 ~\mbox{bounded events} &\to 23917 ~\mbox{outcomes}\\
+5 ~\mbox{bounded events} &\to 2244361 ~\mbox{outcomes}
+\end{align*}
+Clearly, simply superposing bounded events in this manner is not feasible, as 
 it is unreasonable to expect that any given document should contain five or 
 fewer events. In order to avoid generating such a large number of computed 
 event-strings, it is necessary to add constraints where appropriate to limit the
@@ -522,14 +485,14 @@ Events of the same type may stop and start frequently, but by assuming that
 every instance of an event will have a uniquely identifying fluent, we can 
 discard any strings which feature such a resumption.\footnote{We adopt 
 simplifying assumptions made in Allen Relations, though it should be noted that 
-the distinction between event instances and event types (see 
+the distinction between event instances event types (see 
 \citealp{fernando2015semantics}) is not imposed by the 
 event-string framework itself, allowing for discontinuous events (such as 
 \textit{judder}) in future work.} In this way, fluents are 
 \textit{interval-like}. We define the function 
 $\rho_{X}$ on strings of sets to component-wise intersect with $X$ for 
 any $X 
-\subseteq A$ \citep{fernando2016regular}:
+\subseteq A$ \citep{fernando2016prior}:
 \begin{align}
 \rho_{X}(\alpha_1 \cdots \alpha_n) := (\alpha_1 \cap X) \cdots 
 (\alpha_n 
@@ -643,7 +606,7 @@ to be applied, for example, ``$e$ is among the first events to occur in the
 string $s$" (true iff $s ~\&~ $\eboxb{}\eboxb{e}\eboxb{}$^{^{\mbox{$\ast$}}} = 
 s$). This allows for extension beyond Allen Relations in the future.
 
-\section{Application to TLINKs}\label{application}
+\section{Application to ISO-TimeML}\label{application}
 As mentioned in Section \ref{event rep}, attempting to 
 generate all of the possible worlds becomes difficult when using just the 
 unconstrained bounded event-strings alone, as there are just too many (rarely, 
@@ -660,11 +623,11 @@ to generate the initial 13 possibilities. In this way, we may generate a much
 smaller set of possible outcomes from a larger number of bounded events.
 
 We can now rewrite the information given in the three TLINKs 
-(\ref{example:tlink1})--(\ref{example:tlink3}) as the following 
+\ref{example:tlink1}--\ref{example:tlink3} as the following 
 event-strings:\footnote{Using https://www.scss.tcd.ie/$\sim$dwoods/timeml/ to 
 quickly extract TLINKs from an ISO-TimeML document and translate them to 
 event-strings. A non-trivial extension of this program which computes results 
-of superposition is in the works.}
+of superposition is possible.}
 
 \begin{subequations}
 \begin{align}
@@ -741,15 +704,13 @@ linked through one or more relations or shared fluents. In this way, new,
 underspecified events may be formed from the output strings. Consider the 
 scenario with $e_1, \ldots, e_8 \in A$, and the following Allen 
 Relations:
-\begin{subequations}
-\begin{align}
+\begin{align*}
 e_1 <& ~e_4\\
 e_1 ~\mathbf{m}& ~e_2\\
 e_2 ~\mathbf{di}& ~e_3\\
 e_5 ~\mathbf{s}& ~e_7\\
 e_8 >& ~e_5
-\end{align}
-\end{subequations}
+\end{align*} 
 Let us cluster the fluents as follows: for each fluent $a \in A$, fix a set $P 
 = \{ a \}$, and a set $S$ whose members are these sets $P$.
 \begin{align}
@@ -779,23 +740,22 @@ priority-ordering in the case of a large $A$, such as the number of
 component events in an underspecified event group, or the number of relations 
 linking to a particular event.
 \section{Conclusion}\label{conclusion}
-We have explored in this work the possibility of using strings as models for 
-event data, motivated by their nature as computational entities. The 
+We have explored in this work the possibility of using strings as basis for 
+modelling event data, motivated by their nature as computational entities. The 
 operation of asynchronous superposition was described for composing strings 
 which represent finite, bounded events, as well as its limits in terms of 
-massive growth in the number of outputs when the operation is repeated in 
-sequence. The problem is addressed by 
+blow-up when the operation is repeated in sequence. The problem is addressed by 
 constraining the strings which may be superposed, with the 13 unique 
 Allen Relations forming the main part of these, as these can be found in 
 annotated corpora such as TIMEBANK, using the ISO-TimeML standard.
 
 Future work on this topic will further develop the constraints on asynchronous 
-superposition and expand on the features of the current framework, while also 
-examining the use of alternative models to approach the same issue, such as 
-using finite state automata, or a hybrid string/FSA approach. We will 
-additionally explore the potential of employing methods from distributed 
-computing in order to tackle the combinatorial explosion that occurs in 
-asynchronously superposing unconstrained bounded events.
+superposition, while also examining the use of alternative models to 
+approach the same issue, such as using finite state automata, or a hybrid 
+string/FSA approach. We will additionally explore the potential of employing 
+methods from distributed computing in order to tackle the combinatorial 
+explosion that occurs in asynchronously superposing unconstrained bounded 
+events.
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %                                                                              %
 %                             Actual Document Ends                             %
@@ -810,5 +770,5 @@ Centres Programme (Grant 13/RC/2106) and is co-funded under the European
 Regional Development Fund.
 
 \bibliographystyle{chicago}{}
-\bibliography{refs}
+\bibliography{draft1}
 \end{document}
